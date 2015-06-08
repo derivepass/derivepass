@@ -179,6 +179,7 @@ static const CFStringRef kAccountName = @"master@secret";
       [self.view setUserInteractionEnabled: YES];
 
       self.DerivedKeyTextField.text = derived;
+      [self.DerivedKeyTextField becomeFirstResponder];
     });
   });
 }

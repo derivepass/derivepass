@@ -39,8 +39,9 @@ static void print_help(int argc, char** argv) {
   fprintf(stdout, "  --version, -v              Print version\n");
   fprintf(stdout,
           "  --domain host, -d host     Use domain for KDF (required)\n");
-  fprintf(stdout,
-          "  -n <num>                   N number for scrypt (default: 1024)\n");
+  fprintf(
+      stdout,
+      "  -n <num>                   N number for scrypt (default: 32768)\n");
   fprintf(stdout,
           "  -r <num>                   R number for scrypt (default: 8)\n");
   fprintf(stdout,

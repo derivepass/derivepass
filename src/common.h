@@ -3,7 +3,7 @@
 
 #include "scrypt.h"
 
-static const int kDeriveScryptN = 1024;
+static const int kDeriveScryptN = 32768;
 static const int kDeriveScryptR = 8;
 static const int kDeriveScryptP = 4;
 

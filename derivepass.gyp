@@ -9,7 +9,7 @@
       ".",
     ],
     "sources": [
-      "src/derivepass.c",
+      "src/cli.c",
       "src/util.c",
     ],
   }]

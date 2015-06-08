@@ -52,6 +52,7 @@ static void print_help(int argc, char** argv) {
 
 int main(int argc, char** argv) {
   char* secret;
+  char* secret_check;
   char* domain;
   char* output;
   int c;
@@ -98,7 +99,13 @@ int main(int argc, char** argv) {
     }
   } while (c != -1);
 
-  secret = getpass("Secret: ");
+  secret = strdup(getpass("Secret: "));
+  secret_check = strdup(getpass("Secret (just checking): "));
+  if (strcmp(secret, secret_check) != 0) {
+    fprintf(stderr, "Secrets do not match\n");
+    return 1;
+  }
+  free(secret_check);
 
   output = derive(&state, secret, domain);
   assert(output != NULL);

@@ -93,6 +93,7 @@ static const CFStringRef kAccountName = @"master@secret";
 
   dispatch_async(dispatch_get_main_queue(), ^{
     self.MasterSecretTextField.text = secret;
+    self.RepeatSecretTextField.text = secret;
   });
 }
 
@@ -134,7 +135,19 @@ static const CFStringRef kAccountName = @"master@secret";
 
 
 - (IBAction) onDeriveClick: (id) sender {
-  __block NSString* passphrase = self.MasterSecretTextField.text;
+  UITextField* master_field = self.MasterSecretTextField;
+  __block NSString* passphrase = master_field.text;
+  NSString* check_passphrase = self.RepeatSecretTextField.text;
+
+  // Check that passwords match
+  if (![passphrase isEqualToString:check_passphrase]) {
+    master_field.layer.borderColor = [[UIColor redColor] CGColor];
+    master_field.layer.borderWidth = 1.0;
+    [master_field becomeFirstResponder];
+    return;
+  }
+
+  master_field.layer.borderWidth = 0.0;
   __block NSString* domain = self.DomainTextField.text;
 
   dispatch_queue_t queue = dispatch_get_global_queue(
@@ -164,22 +177,34 @@ static const CFStringRef kAccountName = @"master@secret";
 
       [self.ActivityIndicator stopAnimating];
       [self.view setUserInteractionEnabled: YES];
+
       self.DerivedKeyTextField.text = derived;
     });
   });
 }
 
 
-- (IBAction)onDomainEnter: (id) sender {
+- (IBAction) onDomainEnter: (id) sender {
   if ([self.MasterSecretTextField.text length] != 0)
-    [self onMasterEnter: sender];
+    [self onRepeatSecretEnter: sender];
   else
     [self.MasterSecretTextField becomeFirstResponder];
 }
 
 
-- (IBAction)onMasterEnter: (id) sender {
+- (IBAction) onMasterEnter: (id) sender {
+  [self.RepeatSecretTextField becomeFirstResponder];
+}
+
+
+- (IBAction) onRepeatSecretEnter: (id) sender {
   [self onDeriveClick: sender];
+}
+
+
+- (IBAction) onClearClick: (id) sender {
+  self.DomainTextField.text = @"";
+  self.DerivedKeyTextField.text = @"";
 }
 
 @end

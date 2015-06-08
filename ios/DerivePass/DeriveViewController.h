@@ -12,6 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextField* DomainTextField;
 @property (weak, nonatomic) IBOutlet UITextField* MasterSecretTextField;
+@property (weak, nonatomic) IBOutlet UITextField* RepeatSecretTextField;
 @property (weak, nonatomic) IBOutlet UIButton* DeriveButton;
 @property (weak, nonatomic) IBOutlet UITextView* DerivedKeyTextField;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView* ActivityIndicator;

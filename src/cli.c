@@ -7,13 +7,9 @@
 
 #include "scrypt.h"
 
+#include "src/common.h"
 #include "src/util.h"
 #include "src/version.h"
-
-
-static const int kDeriveScryptN = 1024;
-static const int kDeriveScryptR = 8;
-static const int kDeriveScryptP = 4;
 
 
 static const char long_flags[] = "d:n:r:p:hv";
@@ -50,31 +46,6 @@ static void print_help(int argc, char** argv) {
   fprintf(stdout,
           "  -p <num>                   P number for scrypt (default: 4)\n");
   fprintf(stdout, "\n");
-}
-
-
-static char* derive(scrypt_state_t* state,
-                    const char* secret,
-                    const char* domain) {
-  uint8_t out[18];
-  char base_out[24];
-  int err;
-
-  err = scrypt_state_init(state);
-  assert(err == 0);
-
-  scrypt(state,
-         (const uint8_t*) secret,
-         strlen(secret),
-         (const uint8_t*) domain,
-         strlen(domain),
-         out,
-         sizeof(out));
-  scrypt_state_destroy(state);
-
-  base64_encode(out, sizeof(out), base_out);
-
-  return strndup(base_out, sizeof(base_out));
 }
 
 

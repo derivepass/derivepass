@@ -10,6 +10,7 @@
     ],
     "sources": [
       "src/cli.c",
+      "src/common.c",
       "src/util.c",
     ],
   }]

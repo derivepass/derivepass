@@ -7,8 +7,6 @@
 //
 
 #import <dispatch/dispatch.h>  // dispatch_queue_t
-#import <LocalAuthentication/LAContext.h>
-#import <Security/Security.h>
 
 #import "common.h"
 
@@ -27,31 +25,6 @@ static const CFStringRef kAccountName = @"master@secret";
 }
 
 - (void) viewDidLoad {
-  LAContext* la_context = [[LAContext alloc] init];
-
-  LAPolicy policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
-  NSError* auth_error;
-
-  use_touch_id = NO;
-
-  NSString* reason =
-      @"Would you like to use Touch ID to load and store Master secret";
-
-  if ([la_context canEvaluatePolicy: policy error: &auth_error]) {
-    [la_context evaluatePolicy: policy
-               localizedReason: reason
-                         reply: ^(BOOL success, NSError* error) {
-                           use_touch_id = success;
-                           if (success) {
-                             NSLog(@"Using Touch ID");
-                             [self loadMasterSecret];
-                           } else {
-                             NSLog(@"Not using Touch ID");
-                           }
-                         }];
-  } else {
-    NSLog(@"No luck with Touch ID");
-  }
   [super viewDidLoad];
   [self.DomainTextField becomeFirstResponder];
 }
@@ -59,78 +32,6 @@ static const CFStringRef kAccountName = @"master@secret";
 
 - (void) didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
-}
-
-
-- (NSMutableDictionary*) getMasterSecretQuery {
-  NSMutableDictionary* query = [NSMutableDictionary dictionaryWithCapacity: 4];
-
-  query[(__bridge __strong id) kSecClass] =
-      (__bridge id) kSecClassGenericPassword;
-  query[(__bridge __strong id) kSecAttrAccount] =
-      (__bridge id) kAccountName;
-
-  return query;
-}
-
-
-- (void) loadMasterSecret {
-  NSMutableDictionary* query = [self getMasterSecretQuery];
-
-  OSStatus status;
-  CFTypeRef result;
-
-  query[(__bridge __strong id) kSecReturnData] = (__bridge id) kCFBooleanTrue;
-  status = SecItemCopyMatching((__bridge CFDictionaryRef) query, &result);
-  if (status == errSecItemNotFound)
-    return;
-
-  NSAssert(status == noErr, @"Some unexpected SecItemCopyMatching() error");
-
-  __block NSString* secret =
-      [[NSString alloc]  initWithData: (__bridge NSData*) result
-                             encoding: NSUTF8StringEncoding];
-
-  dispatch_async(dispatch_get_main_queue(), ^{
-    self.MasterSecretTextField.text = secret;
-    self.RepeatSecretTextField.text = secret;
-  });
-}
-
-
-- (void) storeMasterSecret: (NSString*) secret {
-  if (!use_touch_id)
-    return;
-
-  NSMutableDictionary* query = [self getMasterSecretQuery];
-
-  OSStatus status;
-  status = SecItemCopyMatching((__bridge CFDictionaryRef) query, NULL);
-
-  if (status == noErr) {
-    // Update existing item
-    NSMutableDictionary* attrs =
-        [NSMutableDictionary dictionaryWithCapacity: 10];
-    attrs[(__bridge __strong id) kSecValueData] =
-        [secret dataUsingEncoding: NSUTF8StringEncoding];
-    attrs[(__bridge __strong id) kSecAttrModificationDate] = [NSDate date];
-
-    status = SecItemUpdate((__bridge CFDictionaryRef) query,
-                           (__bridge CFDictionaryRef) attrs);
-    NSAssert(status == noErr, @"Some unexpected SecItemUpdate() error");
-    return;
-  }
-
-  // Add new item
-  NSAssert(status == errSecItemNotFound, @"SecItemCopyMatching() error");
-
-  query[(__bridge __strong id) kSecAttrCreationDate] = [NSDate date];
-  query[(__bridge __strong id) kSecAttrModificationDate] = [NSDate date];
-  query[(__bridge __strong id) kSecValueData] =
-      [secret dataUsingEncoding: NSUTF8StringEncoding];
-
-  status = SecItemAdd((__bridge CFDictionaryRef) query, NULL);
-  NSAssert(status == noErr, @"Some unexpected SecItemAdd() error");
 }
 
 
@@ -156,7 +57,6 @@ static const CFStringRef kAccountName = @"master@secret";
 
   [self.view setUserInteractionEnabled: NO];
   [self.ActivityIndicator startAnimating];
-  [self storeMasterSecret: passphrase];
 
   dispatch_async(queue, ^{
     scrypt_state_t state;
@@ -206,6 +106,8 @@ static const CFStringRef kAccountName = @"master@secret";
 - (IBAction) onClearClick: (id) sender {
   self.DomainTextField.text = @"";
   self.DerivedKeyTextField.text = @"";
+  self.MasterSecretTextField.text = @"";
+  self.RepeatSecretTextField.text = @"";
 }
 
 @end

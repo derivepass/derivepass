@@ -17,8 +17,6 @@
 		82947ACE1B26281A00029A02 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 82947ACA1B26281A00029A02 /* util.c */; };
 		82947AD01B26284A00029A02 /* scrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82947ACF1B26284A00029A02 /* scrypt.framework */; };
 		82947AD81B26345700029A02 /* DeriveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82947AD71B26345700029A02 /* DeriveViewController.m */; };
-		82947ADA1B263D5C00029A02 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82947AD91B263D5C00029A02 /* LocalAuthentication.framework */; };
-		82947ADC1B26406500029A02 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82947ADB1B26406500029A02 /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,8 +58,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82947ADC1B26406500029A02 /* Security.framework in Frameworks */,
-				82947ADA1B263D5C00029A02 /* LocalAuthentication.framework in Frameworks */,
 				82947AD01B26284A00029A02 /* scrypt.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

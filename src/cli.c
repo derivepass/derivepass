@@ -102,12 +102,16 @@ int main(int argc, char** argv) {
   secret = strdup(getpass("Secret: "));
   secret_check = strdup(getpass("Secret (just checking): "));
   if (strcmp(secret, secret_check) != 0) {
+    memset(secret, 0, strlen(secret));
+    memset(secret_check, 0, strlen(secret_check));
     fprintf(stderr, "Secrets do not match\n");
     return 1;
   }
+  memset(secret_check, 0, strlen(secret_check));
   free(secret_check);
 
   output = derive(&state, secret, domain);
+  memset(secret, 0, strlen(secret));
   assert(output != NULL);
 
   fprintf(stdout, "%s\n", output);

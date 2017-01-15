@@ -213,7 +213,7 @@
   [info setValue:@"gmail.com" forKey:@"domain"];
   [info setValue:@"my username" forKey:@"login"];
   [info setValue:[NSNumber numberWithInt:1] forKey:@"revision"];
-  [info setValue:[NSNumber numberWithInt:self.applications.count]
+  [info setValue:[NSNumber numberWithInt:(int)self.applications.count]
           forKey:@"index"];
 
   [self.dataController save];

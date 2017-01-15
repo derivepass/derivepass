@@ -61,7 +61,6 @@
     NSArray* res = [self.managedObjectContext executeFetchRequest: request error: &err];
     NSAssert(res != nil, @"Failed to save CoreData: %@\n%@",
              [err localizedDescription], [err userInfo]);
-    NSLog(@"%d %@", res.count, err);
     
     return res;
 }

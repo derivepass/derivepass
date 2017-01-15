@@ -10,6 +10,8 @@
 
 #import "ApplicationDataController.h"
 
+#import <CloudKit/CloudKit.h>
+
 @interface ApplicationDataController ()
 
 @property(strong) NSManagedObjectContext* managedObjectContext;
@@ -23,6 +25,12 @@
   self = [super init];
   if (!self) return nil;
 
+  [self initCoreData];
+  return self;
+}
+
+
+- (void)initCoreData {
   NSURL* modelUrl = [[NSBundle mainBundle] URLForResource:@"DerivePass"
                                             withExtension:@"momd"];
   NSManagedObjectModel* model =
@@ -50,8 +58,6 @@
                                                        error:&err];
   NSAssert(store != nil, @"Failed to initialize PSC: %@\n%@",
            [err localizedDescription], [err userInfo]);
-
-  return self;
 }
 
 

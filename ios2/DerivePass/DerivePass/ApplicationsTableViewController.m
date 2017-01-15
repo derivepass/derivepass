@@ -11,6 +11,8 @@
 #import "ApplicationTableViewCell.h"
 #import "EditApplicationTableViewController.h"
 
+#import <MobileCoreServices/UTCoreTypes.h>
+
 #import <dispatch/dispatch.h>  // dispatch_queue_t
 
 #include "src/common.h"
@@ -133,6 +135,17 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            
+            // 5 minutes expiration
+            NSDate* expire = [NSDate dateWithTimeIntervalSinceNow: 5 * 60];
+            
+            [pasteboard setItems: @[@{
+                (NSString*) kUTTypeUTF8PlainText: [NSString stringWithUTF8String: out]
+            }] options: @{
+                UIPasteboardOptionLocalOnly: [NSNumber numberWithInt: 0],
+                UIPasteboardOptionExpirationDate: expire
+            }];
+                                    
             pasteboard.string = [NSString stringWithUTF8String: out];
             
             free(out);

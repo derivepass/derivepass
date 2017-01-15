@@ -12,6 +12,8 @@
 
 @interface AppDelegate ()
 
+@property UIView *previewBlocker;
+
 @end
 
 @implementation AppDelegate
@@ -24,6 +26,15 @@
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
+  if (self.previewBlocker != nil) return;
+
+  UIView *view = [[UIView alloc] initWithFrame:self.window.frame];
+  view.backgroundColor = [UIColor whiteColor];
+  view.alpha = 1.0;
+
+  [self.window addSubview:view];
+  [self.window bringSubviewToFront:view];
+  self.previewBlocker = view;
 }
 
 
@@ -36,6 +47,16 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+  if (self.previewBlocker == nil) return;
+
+  [UIView animateWithDuration:0.2
+      animations:^(void) {
+        [self.previewBlocker setAlpha:0.0];
+      }
+      completion:^(BOOL finished) {
+        [self.previewBlocker removeFromSuperview];
+        self.previewBlocker = nil;
+      }];
 }
 
 

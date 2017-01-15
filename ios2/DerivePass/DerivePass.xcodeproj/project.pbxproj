@@ -25,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D6349BD1E2BF1550051D4DF /* DerivePass.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DerivePass.entitlements; sourceTree = "<group>"; };
 		4D8F97E31E29D9FF0070B586 /* DerivePass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DerivePass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D8F97E71E29D9FF0070B586 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4D8F97E91E29D9FF0070B586 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -85,6 +86,7 @@
 		4D8F97E51E29D9FF0070B586 /* DerivePass */ = {
 			isa = PBXGroup;
 			children = (
+				4D6349BD1E2BF1550051D4DF /* DerivePass.entitlements */,
 				4DE570241E2A6ECE00D55FBA /* libderivepass */,
 				4D8F97E91E29D9FF0070B586 /* AppDelegate.h */,
 				4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */,
@@ -168,8 +170,19 @@
 				TargetAttributes = {
 					4D8F97E21E29D9FF0070B586 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = W4ZPP383US;
+						DevelopmentTeam = VHWE95VV4E;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.DataProtection = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -266,6 +279,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -314,6 +328,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -340,7 +355,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = W4ZPP383US;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = VHWE95VV4E;
 				FRAMEWORK_SEARCH_PATHS = ../../deps/scrypt/out/Release/iphoneos/;
 				HEADER_SEARCH_PATHS = (
 					../../,
@@ -348,7 +365,7 @@
 				);
 				INFOPLIST_FILE = DerivePass/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = indutny.DerivePass2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.indutny.DerivePass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -358,7 +375,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = W4ZPP383US;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = VHWE95VV4E;
 				FRAMEWORK_SEARCH_PATHS = ../../deps/scrypt/out/Release/iphoneos/;
 				HEADER_SEARCH_PATHS = (
 					../../,
@@ -366,7 +384,7 @@
 				);
 				INFOPLIST_FILE = DerivePass/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = indutny.DerivePass2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.indutny.DerivePass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

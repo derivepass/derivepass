@@ -37,6 +37,7 @@
 - (void)viewWillAppear:(BOOL)animated {
   self.emojiLabel.text = @"😬";
   self.masterPassword.text = @"";
+  [self.navigationController setNavigationBarHidden:YES];
 }
 
 

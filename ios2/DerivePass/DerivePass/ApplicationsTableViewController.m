@@ -33,7 +33,6 @@
 
   self.navigationItem.rightBarButtonItems =
       @[ self.addButtonItem, self.editButtonItem ];
-  [self.navigationController setNavigationBarHidden:NO];
 
   self.dataController = [[ApplicationDataController alloc] init];
   self.applications = [NSMutableArray arrayWithArray:self.dataController.list];
@@ -42,6 +41,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [self.tableView reloadData];
+  [self.navigationController setNavigationBarHidden:NO];
 }
 
 

@@ -1,0 +1,36 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D2F72E3CB8C2A27664D5C88A618FEF9D74635285" : 9223372036854775807,
+    "FED2EB7F28ED0A636261037451E211021CDF077E" : 9223372036854775807,
+    "24283DE050224A7EA38CBC3CF8CFFBEA42F80BBF" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "63EA0B9D-BC74-48CB-8BC2-A8B487063D83",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D2F72E3CB8C2A27664D5C88A618FEF9D74635285" : "..\/deps\/scrypt",
+    "FED2EB7F28ED0A636261037451E211021CDF077E" : "..\/deps\/scrypt\/tools\/gyp",
+    "24283DE050224A7EA38CBC3CF8CFFBEA42F80BBF" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "DerivePass",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "DerivePass.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:indutny\/derivepass",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "24283DE050224A7EA38CBC3CF8CFFBEA42F80BBF"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:indutny\/scrypt",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D2F72E3CB8C2A27664D5C88A618FEF9D74635285"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/chromium.googlesource.com\/external\/gyp.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FED2EB7F28ED0A636261037451E211021CDF077E"
+    }
+  ]
+}

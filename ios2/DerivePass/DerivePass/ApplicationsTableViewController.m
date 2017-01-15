@@ -77,6 +77,16 @@
 }
 
 
+- (void)reindex {
+  // Update indexes
+  NSUInteger index = 0;
+  for (NSManagedObject* obj in self.applications) {
+    [obj setValue:[NSNumber numberWithInt:(int)index] forKey:@"index"];
+    index++;
+  }
+}
+
+
 - (void)tableView:(UITableView*)tableView
     moveRowAtIndexPath:(NSIndexPath*)fromIndexPath
            toIndexPath:(NSIndexPath*)toIndexPath {
@@ -84,12 +94,8 @@
   [self.applications removeObjectAtIndex:fromIndexPath.row];
   [self.applications insertObject:info atIndex:toIndexPath.row];
 
-  // Update indexes
-  NSUInteger index = 0;
-  for (NSManagedObject* obj in self.applications) {
-    [obj setValue:[NSNumber numberWithInt:(int)index] forKey:@"index"];
-    index++;
-  }
+  [self reindex];
+
   [self.dataController save];
 }
 
@@ -98,9 +104,12 @@
     commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
      forRowAtIndexPath:(NSIndexPath*)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
-    [self.dataController deleteObject:self.applications[indexPath.row]];
-    [self.dataController save];
+    NSManagedObject* app = self.applications[indexPath.row];
     [self.applications removeObjectAtIndex:indexPath.row];
+
+    [self.dataController deleteObject:app];
+    [self reindex];
+    [self.dataController save];
     [tableView reloadData];
   }
 }
@@ -108,6 +117,7 @@
 
 - (void)tableView:(UITableView*)tableView
     didSelectRowAtIndexPath:(NSIndexPath*)indexPath {
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
   if (tableView.isEditing) return;
 
   ApplicationTableViewCell* cell =
@@ -119,6 +129,8 @@
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
+  cell.activityIndicator.center =
+      CGPointMake(cell.center.x, cell.contentView.center.y);
 
   dispatch_queue_t queue =
       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -163,7 +175,17 @@
       free(out);
 
       [cell.activityIndicator stopAnimating];
-      [self.view setUserInteractionEnabled:YES];
+      UIAlertController* alert = [UIAlertController
+          alertControllerWithTitle:@""
+                           message:@"Copied password to clipboard"
+                    preferredStyle:UIAlertControllerStyleAlert];
+      [self presentViewController:alert animated:YES completion:nil];
+
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC),
+                     dispatch_get_main_queue(), ^(void) {
+                       [alert dismissViewControllerAnimated:YES completion:nil];
+                       [self.view setUserInteractionEnabled:YES];
+                     });
     });
   });
 }
@@ -191,7 +213,7 @@
   [info setValue:@"gmail.com" forKey:@"domain"];
   [info setValue:@"my username" forKey:@"login"];
   [info setValue:[NSNumber numberWithInt:1] forKey:@"revision"];
-  [info setValue:[NSNumber numberWithBool:self.applications.count]
+  [info setValue:[NSNumber numberWithInt:self.applications.count]
           forKey:@"index"];
 
   [self.dataController save];

@@ -283,9 +283,12 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
                      effectView.alpha = 1.0;
                    }];
 
-  [self.view addSubview:effectView];
-  [self.view bringSubviewToFront:self.spinner];
-  [self.spinner startAnimating];
+  // Do not blur things out if we already know the hash
+  if (![masterHashOrigin_ isEqualToString:self.masterPassword.text]) {
+    [self.view addSubview:effectView];
+    [self.view bringSubviewToFront:self.spinner];
+    [self.spinner startAnimating];
+  }
 
   self.view.userInteractionEnabled = NO;
   [self computeHash:^(NSString* hash) {

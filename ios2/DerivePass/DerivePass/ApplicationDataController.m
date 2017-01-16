@@ -28,6 +28,7 @@
   BOOL deferred_save_;
 }
 
+
 - (ApplicationDataController*)init {
   self = [super init];
   if (!self) return nil;
@@ -161,6 +162,7 @@
   [obj setValue:r[@"revision"] forKey:@"revision"];
   [obj setValue:r[@"removed"] forKey:@"removed"];
   [obj setValue:r.modificationDate forKey:@"changed_at"];
+  [obj setValue:r[@"master"] forKey:@"master"];
 }
 
 
@@ -212,6 +214,7 @@
           r[@"index"] = [obj valueForKey:@"index"];
           r[@"revision"] = [obj valueForKey:@"revision"];
           r[@"removed"] = [obj valueForKey:@"removed"];
+          r[@"master"] = [obj valueForKey:@"master"];
           [self.db saveRecord:r
               completionHandler:^(CKRecord* _Nullable record,
                                   NSError* _Nullable error) {
@@ -227,7 +230,11 @@
 
 
 - (NSMutableArray<NSManagedObject*>*)applications {
-  return self.internalList;
+  NSMutableArray<NSManagedObject*>* res = [NSMutableArray array];
+  for (NSManagedObject* obj in self.internalList)
+    if ([[obj valueForKey: @"master"] isEqualToString: self.masterHash])
+      [res insertObject: obj atIndex: res.count];
+  return res;
 }
 
 
@@ -237,6 +244,7 @@
                inManagedObjectContext:self.managedObjectContext];
   [res setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
   [res setValue:[NSDate date] forKey:@"changed_at"];
+  [res setValue:self.masterHash forKey:@"master"];
   return res;
 }
 

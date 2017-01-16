@@ -20,6 +20,7 @@
 @interface ApplicationDataController : NSData
 
 @property(weak) id<ApplicationDataControllerDelegate> delegate;
+@property(strong) NSString* masterHash;
 
 - (ApplicationDataController*)init;
 

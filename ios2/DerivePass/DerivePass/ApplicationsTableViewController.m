@@ -9,7 +9,6 @@
 //
 
 #import "ApplicationsTableViewController.h"
-#import "ApplicationDataController.h"
 #import "ApplicationTableViewCell.h"
 #import "EditApplicationTableViewController.h"
 
@@ -21,7 +20,6 @@
 
 @interface ApplicationsTableViewController ()
 
-@property(strong) ApplicationDataController* dataController;
 @property(strong, nonatomic) IBOutlet UIBarButtonItem* addButtonItem;
 
 @end
@@ -34,7 +32,6 @@
   self.navigationItem.rightBarButtonItems =
       @[ self.addButtonItem, self.editButtonItem ];
 
-  self.dataController = [[ApplicationDataController alloc] init];
   self.dataController.delegate = self;
 
   [self onDataUpdate];

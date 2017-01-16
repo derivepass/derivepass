@@ -5,6 +5,7 @@
         <attribute name="domain" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="login" attributeType="String" syncable="YES"/>
+        <attribute name="master" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="removed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="revision" attributeType="Integer 32" minValueString="1" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
@@ -14,7 +15,11 @@
             </compoundIndex>
         </compoundIndexes>
     </entity>
+    <entity name="Master" representedClassName="Master" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Application" positionX="-54" positionY="-9" width="128" height="150"/>
+        <element name="Application" positionX="-54" positionY="-9" width="128" height="165"/>
+        <element name="Master" positionX="-45" positionY="54" width="128" height="60"/>
     </elements>
 </model>

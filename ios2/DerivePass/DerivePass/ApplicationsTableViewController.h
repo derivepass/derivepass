@@ -16,6 +16,9 @@
 @interface ApplicationsTableViewController
     : UITableViewController<ApplicationDataControllerDelegate>
 
+// Forwarded by Password View
+@property(strong) ApplicationDataController* dataController;
+
 @property NSString* masterPassword;
 @property NSMutableArray<NSManagedObject*>* applications;
 

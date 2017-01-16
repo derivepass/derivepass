@@ -12,6 +12,7 @@
 
 @interface TutorialViewController : UIViewController
 
-@property(weak, nonatomic) IBOutlet UIImageView *image;
+@property(strong) NSString* text;
+@property(strong) UIImage* image;
 
 @end

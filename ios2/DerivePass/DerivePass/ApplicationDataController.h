@@ -11,13 +11,24 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
+@protocol ApplicationDataControllerDelegate
+
+- (void)onDataUpdate;
+
+@end
+
 @interface ApplicationDataController : NSData
+
+@property(weak) id<ApplicationDataControllerDelegate> delegate;
 
 - (ApplicationDataController*)init;
 
-- (NSArray<NSManagedObject*>*)list;
+- (NSMutableArray<NSManagedObject*>*)applications;
+
 - (NSManagedObject*)allocApplication;
-- (void)deleteObject:(NSManagedObject*)object;
+- (void)pushApplication:(NSManagedObject*)object;
+- (void)deleteApplication:(NSManagedObject*)object;
+
 - (void)save;
 
 @end

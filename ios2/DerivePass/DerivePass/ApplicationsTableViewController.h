@@ -11,7 +11,10 @@
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
 
-@interface ApplicationsTableViewController : UITableViewController
+#import "ApplicationDataController.h"
+
+@interface ApplicationsTableViewController
+    : UITableViewController<ApplicationDataControllerDelegate>
 
 @property NSString* masterPassword;
 @property NSMutableArray<NSManagedObject*>* applications;

@@ -39,12 +39,15 @@
 }
 
 
+// TODO(indutny): move to data controller
 - (IBAction)onSave:(id)sender {
   [self.info setValue:self.domainField.text forKey:@"domain"];
   [self.info setValue:self.loginField.text forKey:@"login"];
 
   int rev = atoi([self.revisionField.text UTF8String]);
   [self.info setValue:[NSNumber numberWithInt:rev] forKey:@"revision"];
+
+  [self.info setValue:[NSDate date] forKey:@"changed_at"];
   [self.dataController save];
 
   [self.navigationController popViewControllerAnimated:YES];

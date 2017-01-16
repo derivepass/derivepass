@@ -35,7 +35,9 @@
       @[ self.addButtonItem, self.editButtonItem ];
 
   self.dataController = [[ApplicationDataController alloc] init];
-  self.applications = [NSMutableArray arrayWithArray:self.dataController.list];
+  self.dataController.delegate = self;
+
+  [self onDataUpdate];
 }
 
 
@@ -47,7 +49,18 @@
 
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
+}
+
+
+- (void)onDataUpdate {
+  self.applications = [NSMutableArray array];
+  for (NSManagedObject* obj in self.dataController.applications) {
+    NSNumber* removed = [obj valueForKey:@"removed"];
+    if (removed.intValue) continue;
+    [self.applications insertObject:obj atIndex:self.applications.count];
+  }
+
+  [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -71,7 +84,6 @@
 
   cell.textLabel.text = [info valueForKey:@"domain"];
   cell.detailTextLabel.text = [info valueForKey:@"login"];
-  ;
 
   return cell;
 }
@@ -107,7 +119,7 @@
     NSManagedObject* app = self.applications[indexPath.row];
     [self.applications removeObjectAtIndex:indexPath.row];
 
-    [self.dataController deleteObject:app];
+    [self.dataController deleteApplication:app];
     [self reindex];
     [self.dataController save];
     [tableView reloadData];
@@ -177,7 +189,7 @@
       [cell.activityIndicator stopAnimating];
       UIAlertController* alert = [UIAlertController
           alertControllerWithTitle:@""
-                           message:@"Copied password to clipboard"
+                           message:@"Password copied to clipboard"
                     preferredStyle:UIAlertControllerStyleAlert];
       [self presentViewController:alert animated:YES completion:nil];
 
@@ -216,9 +228,10 @@
   [info setValue:[NSNumber numberWithInt:(int)self.applications.count]
           forKey:@"index"];
 
+  [self.applications insertObject:info atIndex:self.applications.count];
+  [self.dataController pushApplication:info];
   [self.dataController save];
 
-  [self.applications insertObject:info atIndex:self.applications.count];
   [self.tableView reloadData];
 }
 

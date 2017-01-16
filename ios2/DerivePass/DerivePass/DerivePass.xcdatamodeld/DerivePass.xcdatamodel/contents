@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Application" representedClassName="Application" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="changed_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="domain" attributeType="String" syncable="YES"/>
-        <attribute name="index" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="login" attributeType="String" syncable="YES"/>
-        <attribute name="revision" attributeType="Integer 32" minValueString="1" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="removed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="revision" attributeType="Integer 32" minValueString="1" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="index"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <elements>
-        <element name="Application" positionX="-54" positionY="-9" width="128" height="105"/>
+        <element name="Application" positionX="-54" positionY="-9" width="128" height="150"/>
     </elements>
 </model>

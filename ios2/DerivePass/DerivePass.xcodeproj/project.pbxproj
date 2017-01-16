@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D6349C31E2BFBD10051D4DF /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D6349C21E2BFBD10051D4DF /* CloudKit.framework */; };
 		4D8F97E81E29D9FF0070B586 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97E71E29D9FF0070B586 /* main.m */; };
 		4D8F97EB1E29D9FF0070B586 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */; };
 		4D8F97EE1E29D9FF0070B586 /* PasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97ED1E29D9FF0070B586 /* PasswordViewController.m */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		4D6349BD1E2BF1550051D4DF /* DerivePass.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DerivePass.entitlements; sourceTree = "<group>"; };
+		4D6349C21E2BFBD10051D4DF /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		4D8F97E31E29D9FF0070B586 /* DerivePass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DerivePass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D8F97E71E29D9FF0070B586 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4D8F97E91E29D9FF0070B586 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D8F98041E29DA780070B586 /* scrypt.framework in Frameworks */,
+				4D6349C31E2BFBD10051D4DF /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +124,7 @@
 		4D8F98001E29DA5D0070B586 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4D6349C21E2BFBD10051D4DF /* CloudKit.framework */,
 				4D8F98031E29DA780070B586 /* scrypt.framework */,
 				4D8F98011E29DA5D0070B586 /* deps */,
 			);
@@ -180,7 +184,7 @@
 								enabled = 0;
 							};
 							com.apple.iCloud = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -355,6 +359,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = DerivePass/DerivePass.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = VHWE95VV4E;
@@ -375,6 +380,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = DerivePass/DerivePass.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = VHWE95VV4E;
 				FRAMEWORK_SEARCH_PATHS = ../../deps/scrypt/out/Release/iphoneos/;

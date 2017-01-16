@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
     <entity name="Application" representedClassName="Application" syncable="YES" codeGenerationType="class">
+        <attribute name="changed_at" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="domain" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="login" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="master" attributeType="String" minValueString="1" syncable="YES"/>
-        <attribute name="modified_at" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="removed" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="revision" attributeType="Integer 32" minValueString="0" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="uuid" attributeType="String" minValueString="1" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Application" positionX="-45" positionY="0" width="128" height="150"/>
+        <element name="Application" positionX="-45" positionY="0" width="128" height="165"/>
     </elements>
 </model>

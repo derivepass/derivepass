@@ -9,8 +9,8 @@
 //
 
 #import "PasswordViewController.h"
-#import "ApplicationsTableViewController.h"
 #import "ApplicationDataController.h"
+#import "ApplicationsTableViewController.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #import <QuartzCore/QuartzCore.h>
@@ -33,7 +33,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 @property(weak, nonatomic) IBOutlet UITextField* masterPassword;
 @property(weak, nonatomic) IBOutlet UILabel* emojiLabel;
 @property(weak, nonatomic) IBOutlet UILabel* emojiConfirmationLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property(weak, nonatomic) IBOutlet UIActivityIndicatorView* spinner;
 
 @property(strong) ApplicationDataController* dataController;
 
@@ -49,9 +49,17 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  
+
   self.dataController = [[ApplicationDataController alloc] init];
   [self.navigationController setNavigationBarHidden:YES];
+
+  NSUserDefaults* def = [NSUserDefaults standardUserDefaults];
+  if ([def boolForKey:@"seenTutorial"]) return;
+
+  // Do asynchronously to prevent black bar at the top
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self performSegueWithIdentifier:@"ToTutorial" sender:self];
+  });
 }
 
 
@@ -174,48 +182,45 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
     self.emojiConfirmationLabel.text = res;
   else
     self.emojiLabel.text = res;
-  
+
   [self computeHashEarly];
 }
 
 
 - (void)computeHashEarly {
-  if (confirming_)
-    return;
-  
+  if (confirming_) return;
+
   // Currently computing
-  if ((baton_ & 1) == 1)
-    return;
-  
+  if ((baton_ & 1) == 1) return;
+
   dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC);
   baton_ += 2;
   uint64_t baton = baton_;
   dispatch_after(when, dispatch_get_main_queue(), ^{
-    if (baton != baton_)
-      return;
-    
-    [self computeHash: nil];
+    if (baton != baton_) return;
+
+    [self computeHash:nil];
   });
 }
 
 
-- (void) computeHash: (void(^)(NSString*)) completion {
+- (void)computeHash:(void (^)(NSString*))completion {
   dispatch_queue_t queue =
-  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-  
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
   __block NSString* origin = self.masterPassword.text;
-  
+
   // Cached already
   if (masterHashOrigin_ == origin) {
     if (completion != nil) completion(masterHash_);
     return;
   }
-  
+
   // Wait for current computation to finish
   if ((baton_ & 1) == 1) {
     dispatch_async(queue, ^{
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self computeHash: completion];
+        [self computeHash:completion];
       });
     });
     return;
@@ -225,23 +230,22 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   dispatch_async(queue, ^{
     scrypt_state_t state;
     __block char* out;
-    
+
     state.n = kDeriveScryptN;
     state.r = kDeriveScryptR;
     state.p = kDeriveScryptP;
 
     out = derive(&state, origin.UTF8String, kScryptDomain);
     NSAssert(out != NULL, @"Failed to derive");
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
       baton_ ^= 1;
 
-      masterHash_ = [NSString stringWithUTF8String: out];
+      masterHash_ = [NSString stringWithUTF8String:out];
       masterHashOrigin_ = origin;
       free(out);
 
-      if (completion != nil)
-        completion(masterHash_);
+      if (completion != nil) completion(masterHash_);
     });
   });
 }
@@ -250,7 +254,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 - (IBAction)onSubmitPassword:(id)sender {
   __block BOOL after_confirmation = NO;
   if (confirming_) {
-    if (![self.masterPassword.text isEqualToString: confirming_]) {
+    if (![self.masterPassword.text isEqualToString:confirming_]) {
       UITextField* f = self.masterPassword;
 
       CABasicAnimation* a = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -265,77 +269,80 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
       return;
     }
     after_confirmation = YES;
-    [self hideConfirmation: nil];
+    [self hideConfirmation:nil];
   }
-  
-  UIBlurEffect* effect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleLight];
-  UIVisualEffectView* effectView = [[UIVisualEffectView alloc] initWithEffect: effect];
+
+  UIBlurEffect* effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+  UIVisualEffectView* effectView =
+      [[UIVisualEffectView alloc] initWithEffect:effect];
   effectView.frame = self.view.frame;
   effectView.alpha = 0.0;
-  
-  [UIView animateWithDuration: 0.1 animations: ^{
-    effectView.alpha = 1.0;
-  }];
-  
-  [self.view addSubview: effectView];
-  [self.view bringSubviewToFront: self.spinner];
+
+  [UIView animateWithDuration:0.1
+                   animations:^{
+                     effectView.alpha = 1.0;
+                   }];
+
+  [self.view addSubview:effectView];
+  [self.view bringSubviewToFront:self.spinner];
   [self.spinner startAnimating];
-  
+
   self.view.userInteractionEnabled = NO;
-  [self computeHash: ^(NSString* hash) {
+  [self computeHash:^(NSString* hash) {
     self.view.userInteractionEnabled = YES;
     [self.spinner stopAnimating];
-    [UIView animateWithDuration: 0.1 animations: ^{
-      effectView.alpha = 0.0;
-    } completion:^(BOOL finished) {
-      [effectView removeFromSuperview];
-    }];
-    
+    [UIView animateWithDuration:0.1
+        animations:^{
+          effectView.alpha = 0.0;
+        }
+        completion:^(BOOL finished) {
+          [effectView removeFromSuperview];
+        }];
+
     self.dataController.masterHash = hash;
     if (self.dataController.applications.count == 0) {
-      if (!after_confirmation)
-        return [self onEmojiTap: self];
+      if (!after_confirmation) return [self onEmojiTap:self];
     }
-    
+
     [self performSegueWithIdentifier:@"ToApplications" sender:self];
   }];
 }
 
 
-- (void) hideConfirmation: (void (^)()) completion {
+- (void)hideConfirmation:(void (^)())completion {
   if (confirming_ == nil) {
     if (completion != nil) completion();
     return;
   }
-  
+
   UILabel* original = self.emojiLabel;
   UILabel* conf = self.emojiConfirmationLabel;
-  
+
   self.masterPassword.text = confirming_;
   self.masterPassword.placeholder = kMasterPlaceholder;
   self.masterPassword.returnKeyType = UIReturnKeyDone;
   confirming_ = nil;
-  
+
   [UIView animateWithDuration:0.3
-                   animations:^{
-                     conf.center = original.center;
-                     conf.alpha = 0.0;
-                   } completion:^(BOOL finished) {
-                     if (completion != nil)
-                       completion();
-                   }];
+      animations:^{
+        conf.center = original.center;
+        conf.alpha = 0.0;
+      }
+      completion:^(BOOL finished) {
+        if (completion != nil) completion();
+      }];
 }
 
 
 - (IBAction)onEmojiTap:(id)sender {
   if (confirming_) {
-    [self hideConfirmation: nil];
+    [self hideConfirmation:nil];
     return;
   }
-  
+
   UILabel* original = self.emojiLabel;
   UILabel* conf = self.emojiConfirmationLabel;
-  
+
 
   // No transition when master password is empty
   if (self.masterPassword.text.length == 0) return;

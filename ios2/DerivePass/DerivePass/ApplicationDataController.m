@@ -232,8 +232,8 @@
 - (NSMutableArray<NSManagedObject*>*)applications {
   NSMutableArray<NSManagedObject*>* res = [NSMutableArray array];
   for (NSManagedObject* obj in self.internalList)
-    if ([[obj valueForKey: @"master"] isEqualToString: self.masterHash])
-      [res insertObject: obj atIndex: res.count];
+    if ([[obj valueForKey:@"master"] isEqualToString:self.masterHash])
+      [res insertObject:obj atIndex:res.count];
   return res;
 }
 

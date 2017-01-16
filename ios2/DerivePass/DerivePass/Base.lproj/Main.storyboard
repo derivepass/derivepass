@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Password View Controller-->
+        <!--Master Password-->
         <scene sceneID="2tc-hW-Vey">
             <objects>
-                <viewController id="5XO-FJ-yEr" customClass="PasswordViewController" sceneMemberID="viewController">
+                <viewController title="Master Password" id="5XO-FJ-yEr" customClass="PasswordViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="J6O-50-TRq"/>
                         <viewControllerLayoutGuide type="bottom" id="0bK-ak-sP2"/>
@@ -74,6 +74,7 @@
                         <outlet property="masterPassword" destination="yZF-r2-Cnq" id="LrD-Qr-GHs"/>
                         <outlet property="spinner" destination="k8S-Gr-3x1" id="kzq-AY-Wgj"/>
                         <segue destination="cCH-5t-r8D" kind="show" identifier="ToApplications" id="qwf-8Z-PAn"/>
+                        <segue destination="dPN-eC-r4I" kind="show" identifier="ToTutorial" id="ke2-w5-LIc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMH-ph-KQL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -145,6 +146,70 @@
                 </barButtonItem>
             </objects>
             <point key="canvasLocation" x="1536.2318840579712" y="260.054347826087"/>
+        </scene>
+        <!--Tutorial Controller-->
+        <scene sceneID="iT6-Td-gYH">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="dPN-eC-r4I" userLabel="Tutorial Controller" customClass="TutorialPageViewController" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IEo-ha-Tnh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="681" y="1017"/>
+        </scene>
+        <!--Tutorial Page Controller-->
+        <scene sceneID="9SU-jy-Dco">
+            <objects>
+                <viewController storyboardIdentifier="TutorialPage" id="naZ-ct-rZ6" userLabel="Tutorial Page Controller" customClass="TutorialViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Rb-gh-vJt"/>
+                        <viewControllerLayoutGuide type="bottom" id="IY4-EA-QdX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="T2z-nQ-zZy">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CDo-Ed-3bT">
+                                <rect key="frame" x="0.0" y="20" width="414" height="716"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="image" destination="CDo-Ed-3bT" id="8S8-sg-sEe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zi2-oj-l0V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1534.7826086956522" y="1016.5760869565219"/>
+        </scene>
+        <!--Tutorial Final Page Controller-->
+        <scene sceneID="22D-1L-4R0">
+            <objects>
+                <viewController storyboardIdentifier="TutorialFinalPage" title="Tutorial Final Page Controller" id="i7w-Kp-lkP" userLabel="Tutorial Final Page Controller" customClass="TutorialFinalViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="p59-Ju-jvm"/>
+                        <viewControllerLayoutGuide type="bottom" id="dLf-rf-c0c"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aaz-X4-IyL">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CNF-2S-FTG">
+                                <rect key="frame" x="78" y="346" width="258" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <state key="normal" title="Start using application"/>
+                                <connections>
+                                    <action selector="onButtonClick:" destination="i7w-Kp-lkP" eventType="primaryActionTriggered" id="94R-AH-Y7N"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UbA-rT-qtc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2360.8695652173915" y="1016.5760869565219"/>
         </scene>
         <!--Application Info-->
         <scene sceneID="ay6-3u-rRU">

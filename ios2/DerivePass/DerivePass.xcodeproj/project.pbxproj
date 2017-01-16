@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4D6349C31E2BFBD10051D4DF /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D6349C21E2BFBD10051D4DF /* CloudKit.framework */; };
 		4D6349D21E2D218F0051D4DF /* DerivePass.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349D01E2D218F0051D4DF /* DerivePass.xcdatamodeld */; };
+		4D6349DB1E2D2E380051D4DF /* TutorialPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349DA1E2D2E380051D4DF /* TutorialPageViewController.m */; };
+		4D6349DE1E2D2E680051D4DF /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */; };
+		4D6349E11E2D45690051D4DF /* TutorialFinalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */; };
 		4D8F97E81E29D9FF0070B586 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97E71E29D9FF0070B586 /* main.m */; };
 		4D8F97EB1E29D9FF0070B586 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */; };
 		4D8F97EE1E29D9FF0070B586 /* PasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97ED1E29D9FF0070B586 /* PasswordViewController.m */; };
@@ -29,6 +32,12 @@
 		4D6349BD1E2BF1550051D4DF /* DerivePass.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DerivePass.entitlements; sourceTree = "<group>"; };
 		4D6349C21E2BFBD10051D4DF /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		4D6349D11E2D218F0051D4DF /* DerivePass.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DerivePass.xcdatamodel; sourceTree = "<group>"; };
+		4D6349D91E2D2E380051D4DF /* TutorialPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialPageViewController.h; sourceTree = "<group>"; };
+		4D6349DA1E2D2E380051D4DF /* TutorialPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialPageViewController.m; sourceTree = "<group>"; };
+		4D6349DC1E2D2E680051D4DF /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialViewController.h; sourceTree = "<group>"; };
+		4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialViewController.m; sourceTree = "<group>"; };
+		4D6349DF1E2D45690051D4DF /* TutorialFinalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialFinalViewController.h; sourceTree = "<group>"; };
+		4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialFinalViewController.m; sourceTree = "<group>"; };
 		4D8F97E31E29D9FF0070B586 /* DerivePass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DerivePass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D8F97E71E29D9FF0070B586 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4D8F97E91E29D9FF0070B586 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -92,26 +101,32 @@
 		4D8F97E51E29D9FF0070B586 /* DerivePass */ = {
 			isa = PBXGroup;
 			children = (
+				4D8F97FA1E29D9FF0070B586 /* Info.plist */,
 				4D6349BD1E2BF1550051D4DF /* DerivePass.entitlements */,
+				4D6349D01E2D218F0051D4DF /* DerivePass.xcdatamodeld */,
+				4D8F97F71E29D9FF0070B586 /* LaunchScreen.storyboard */,
+				4D8F97EF1E29D9FF0070B586 /* Main.storyboard */,
+				4D8F97F51E29D9FF0070B586 /* Assets.xcassets */,
+				4D8F97E61E29D9FF0070B586 /* Supporting Files */,
 				4DE570241E2A6ECE00D55FBA /* libderivepass */,
 				4D8F97E91E29D9FF0070B586 /* AppDelegate.h */,
 				4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */,
-				4D8F97EC1E29D9FF0070B586 /* PasswordViewController.h */,
-				4D8F97ED1E29D9FF0070B586 /* PasswordViewController.m */,
-				4D8F97EF1E29D9FF0070B586 /* Main.storyboard */,
-				4D8F97F51E29D9FF0070B586 /* Assets.xcassets */,
-				4D8F97F71E29D9FF0070B586 /* LaunchScreen.storyboard */,
-				4D8F97FA1E29D9FF0070B586 /* Info.plist */,
-				4D8F97E61E29D9FF0070B586 /* Supporting Files */,
+				4DE570491E2AE47500D55FBA /* ApplicationDataController.h */,
+				4DE5704A1E2AE47500D55FBA /* ApplicationDataController.m */,
+				4DE570401E2AD6DF00D55FBA /* ApplicationTableViewCell.h */,
+				4DE570411E2AD6DF00D55FBA /* ApplicationTableViewCell.m */,
 				4DE570311E2A9DF100D55FBA /* ApplicationsTableViewController.h */,
 				4DE570321E2A9DF100D55FBA /* ApplicationsTableViewController.m */,
 				4DE5703D1E2AB7F600D55FBA /* EditApplicationTableViewController.h */,
 				4DE5703E1E2AB7F600D55FBA /* EditApplicationTableViewController.m */,
-				4DE570401E2AD6DF00D55FBA /* ApplicationTableViewCell.h */,
-				4DE570411E2AD6DF00D55FBA /* ApplicationTableViewCell.m */,
-				4DE570491E2AE47500D55FBA /* ApplicationDataController.h */,
-				4DE5704A1E2AE47500D55FBA /* ApplicationDataController.m */,
-				4D6349D01E2D218F0051D4DF /* DerivePass.xcdatamodeld */,
+				4D8F97EC1E29D9FF0070B586 /* PasswordViewController.h */,
+				4D8F97ED1E29D9FF0070B586 /* PasswordViewController.m */,
+				4D6349D91E2D2E380051D4DF /* TutorialPageViewController.h */,
+				4D6349DA1E2D2E380051D4DF /* TutorialPageViewController.m */,
+				4D6349DC1E2D2E680051D4DF /* TutorialViewController.h */,
+				4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */,
+				4D6349DF1E2D45690051D4DF /* TutorialFinalViewController.h */,
+				4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */,
 			);
 			path = DerivePass;
 			sourceTree = "<group>";
@@ -236,10 +251,13 @@
 				4DE5703F1E2AB7F600D55FBA /* EditApplicationTableViewController.m in Sources */,
 				4DE570331E2A9DF100D55FBA /* ApplicationsTableViewController.m in Sources */,
 				4DE570421E2AD6DF00D55FBA /* ApplicationTableViewCell.m in Sources */,
+				4D6349DB1E2D2E380051D4DF /* TutorialPageViewController.m in Sources */,
 				4D8F980B1E29DAA40070B586 /* util.c in Sources */,
 				4DE570481E2ADA0600D55FBA /* (null) in Sources */,
+				4D6349DE1E2D2E680051D4DF /* TutorialViewController.m in Sources */,
 				4DE5704B1E2AE47500D55FBA /* ApplicationDataController.m in Sources */,
 				4D6349D21E2D218F0051D4DF /* DerivePass.xcdatamodeld in Sources */,
+				4D6349E11E2D45690051D4DF /* TutorialFinalViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -76,7 +76,10 @@
 				4D8F97E41E29D9FF0070B586 /* Products */,
 				4D8F98001E29DA5D0070B586 /* Frameworks */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
 		};
 		4D8F97E41E29D9FF0070B586 /* Products */ = {
 			isa = PBXGroup;

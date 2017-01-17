@@ -40,17 +40,16 @@
     ],
     @[
       @"There are millions of different Emoji combinations",
-      @"Each combo corresponds\nto 10^69 passwords",
-      @"That's bigger than\nnumber of atoms\nin our Solar system",
-      @"Your Master Password is safe\neven if someone has seen the combo",
+      @"Each combo corresponds\nto 10^146 passwords",
+      @"That's bigger than\nnumber of atoms\nin Universe",
+      @"Your Master Password is safe\neven if someone has seen\nthe combo",
     ],
     @[ @"Increment revision\nif you need a new password" ],
     @[
       @"Tap application row\nto copy password",
       @"Passwords are computed\non the fly",
       @"No password is stored\nin the cloud",
-      @"We store just\napplication info\nand\nsecure hash of your\nmaster "
-      @"password"
+      @"We store just\napplication info\nand emojis"
     ]
   };
   static NSString *kImages[] = {

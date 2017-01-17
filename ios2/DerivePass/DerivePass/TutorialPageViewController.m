@@ -27,40 +27,55 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   self.pages = [NSMutableArray array];
-  
-  static NSString* kTexts[] = {
-    @"Welcome to\nDerivePass",
-    @"This app\nsecurely creates\npasswords\nout of a single\nMaster Password",
-    @"Enter\nMaster Password\nhere",
-    @"Emojis\nrepresent your\nMaster Password",
-    @"There are\nmillions of different\nEmoji combinations",
-    @"Master Password\ncan't be guessed\nfrom them",
-    @"Increment\nrevision\nif you need\nnew password",
-    @"Tap\napplication row\nto copy password",
-    @"Passwords\nare computed\non the fly"
+
+  NSArray<NSString *> *kTexts[] = {
+    @[
+      @"Welcome to DerivePass",
+      @"This app\nsecurely creates passwords\nout of a single\nMaster Password",
+      @"Master Password goes here"
+    ],
+    @[
+      @"These Emojis represent your Master Password",
+      @"Use them to check that you typed the right password"
+    ],
+    @[
+      @"There are millions of different Emoji combinations",
+      @"Each combo corresponds\nto 10^69 passwords",
+      @"That's bigger than\nnumber of atoms\nin our Solar system",
+      @"Your Master Password is safe\neven if someone has seen the combo",
+    ],
+    @[ @"Increment revision\nif you need a new password" ],
+    @[
+      @"Tap application row\nto copy password",
+      @"Passwords are computed\non the fly",
+      @"No password is stored\nin the cloud",
+      @"We store just\napplication info\nand\nsecure hash of your\nmaster "
+      @"password"
+    ]
   };
-  static NSString* kImages[] = {
-    nil, nil, @"tutorial-1.png", @"tutorial-2.png", @"tutorial-3.png", nil,
-    @"tutorial-4.png", @"tutorial-5.png", nil
+  static NSString *kImages[] = {
+    @"tutorial-1.png",
+    @"tutorial-2.png",
+    @"tutorial-3.png",
+    @"tutorial-4.png",
+    @"tutorial-5.png"
   };
   NSAssert(ARRAY_SIZE(kTexts) == ARRAY_SIZE(kImages),
            @"Mismatch in count of images/texts");
 
   for (unsigned int i = 0; i < ARRAY_SIZE(kTexts); i++) {
-    TutorialViewController *t =
-        [self.storyboard
-            instantiateViewControllerWithIdentifier:@"TutorialPage"];
-    t.text = kTexts[i];
-    if (kImages[i] != nil)
-      t.image = [UIImage imageNamed: kImages[i]];
-    [self.pages addObject: t];
+    TutorialViewController *t = [self.storyboard
+        instantiateViewControllerWithIdentifier:@"TutorialPage"];
+    t.texts = kTexts[i];
+    if (kImages[i] != nil) t.image = [UIImage imageNamed:kImages[i]];
+    [self.pages addObject:t];
   }
 
   TutorialFinalViewController * final = [self.storyboard
       instantiateViewControllerWithIdentifier:@"TutorialFinalPage"];
   final.delegate = self;
-  [self.pages addObject: final];
-  
+  [self.pages addObject:final];
+
   [self setViewControllers:@[ self.pages[0] ]
                  direction:UIPageViewControllerNavigationDirectionForward
                   animated:NO

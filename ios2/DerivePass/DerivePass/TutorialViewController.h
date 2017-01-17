@@ -12,7 +12,7 @@
 
 @interface TutorialViewController : UIViewController
 
-@property(strong) NSString* text;
+@property(strong) NSArray<NSString*>* texts;
 @property(strong) UIImage* image;
 
 @end

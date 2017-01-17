@@ -126,7 +126,8 @@
 
 
 - (void)finishReached {
-  // TODO(indutny): update user defaults
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  [def setBool:YES forKey:@"seenTutorial"];
   [self.navigationController popViewControllerAnimated:YES];
 }
 

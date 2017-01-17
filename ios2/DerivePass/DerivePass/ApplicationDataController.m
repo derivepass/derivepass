@@ -141,13 +141,7 @@
     [self uploadItemToCloud:obj];
   }
 
-  [self.internalList sortUsingComparator:^NSComparisonResult(id _Nonnull obj1,
-                                                             id _Nonnull obj2) {
-    NSManagedObject* a = obj1;
-    NSManagedObject* b = obj2;
-
-    return [[a valueForKey:@"index"] compare:[b valueForKey:@"index"]];
-  }];
+  [self sort];
 
   [self coreDataSave];
   [self.delegate onDataUpdate];
@@ -260,10 +254,22 @@
 
 
 - (void)save {
+  [self sort];
   for (NSManagedObject* obj in self.internalList) {
     [self uploadItemToCloud:obj];
   }
   [self coreDataSave];
+}
+
+
+- (void)sort {
+  [self.internalList sortUsingComparator:^NSComparisonResult(id _Nonnull obj1,
+                                                             id _Nonnull obj2) {
+    NSManagedObject* a = obj1;
+    NSManagedObject* b = obj2;
+
+    return [[a valueForKey:@"index"] compare:[b valueForKey:@"index"]];
+  }];
 }
 
 

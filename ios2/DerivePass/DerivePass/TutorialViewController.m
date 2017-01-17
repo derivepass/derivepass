@@ -57,7 +57,10 @@
     self.label.alpha = 0.0;
     self.imageView.alpha = 1.0;
   }
+}
 
+
+- (void)viewDidAppear:(BOOL)animated {
   if (index_ < self.texts.count) [self doSlide];
 }
 
@@ -97,23 +100,16 @@
           self.label.alpha = 0.0;
         }
         completion:^(BOOL finished) {
+          NSTimeInterval dur;
           if (index_ == self.texts.count) {
+            dur = 3.0;
             self.label.text = @"Please swipe to continue...";
-
-            dispatch_time_t end_delay =
-                dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
-            dispatch_after(end_delay, queue, ^{
-              [UIView animateWithDuration:1.2
-                               animations:^{
-                                 self.label.alpha = 0.4;
-                               }];
-            });
-            return;
+          } else {
+            dur = 0.3;
+            self.label.text = self.texts[index_];
           }
 
-          self.label.text = self.texts[index_];
-
-          [UIView animateWithDuration:0.33
+          [UIView animateWithDuration:dur
               animations:^{
                 self.label.alpha = 1.0;
               }

@@ -23,7 +23,6 @@
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
-static const char* kScryptDomain = "derivepass/key";
 static NSString* const kDefaultEmoji = @"😬";
 static NSString* const kMasterPlaceholder = @"Master Password";
 static NSString* const kConfirmPlaceholder = @"Confirm Password";
@@ -33,7 +32,6 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 @property(weak, nonatomic) IBOutlet UITextField* masterPassword;
 @property(weak, nonatomic) IBOutlet UILabel* emojiLabel;
 @property(weak, nonatomic) IBOutlet UILabel* emojiConfirmationLabel;
-@property(weak, nonatomic) IBOutlet UIActivityIndicatorView* spinner;
 
 @property(strong) ApplicationDataController* dataController;
 
@@ -41,9 +39,6 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 @implementation PasswordViewController {
   NSString* confirming_;
-  NSString* masterHashOrigin_;
-  NSString* masterHash_;
-  uint64_t baton_;
 }
 
 
@@ -182,72 +177,6 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
     self.emojiConfirmationLabel.text = res;
   else
     self.emojiLabel.text = res;
-
-  [self computeHashEarly];
-}
-
-
-- (void)computeHashEarly {
-  if (confirming_) return;
-
-  // Currently computing
-  if ((baton_ & 1) == 1) return;
-
-  dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC);
-  baton_ += 2;
-  uint64_t baton = baton_;
-  dispatch_after(when, dispatch_get_main_queue(), ^{
-    if (baton != baton_) return;
-
-    [self computeHash:nil];
-  });
-}
-
-
-- (void)computeHash:(void (^)(NSString*))completion {
-  dispatch_queue_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-  __block NSString* origin = self.masterPassword.text;
-
-  // Cached already
-  if (masterHashOrigin_ == origin) {
-    if (completion != nil) completion(masterHash_);
-    return;
-  }
-
-  // Wait for current computation to finish
-  if ((baton_ & 1) == 1) {
-    dispatch_async(queue, ^{
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [self computeHash:completion];
-      });
-    });
-    return;
-  }
-
-  baton_ |= 1;
-  dispatch_async(queue, ^{
-    scrypt_state_t state;
-    __block char* out;
-
-    state.n = kDeriveScryptN;
-    state.r = kDeriveScryptR;
-    state.p = kDeriveScryptP;
-
-    out = derive(&state, origin.UTF8String, kScryptDomain);
-    NSAssert(out != NULL, @"Failed to derive");
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      baton_ ^= 1;
-
-      masterHash_ = [NSString stringWithUTF8String:out];
-      masterHashOrigin_ = origin;
-      free(out);
-
-      if (completion != nil) completion(masterHash_);
-    });
-  });
 }
 
 
@@ -272,43 +201,12 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
     [self hideConfirmation:nil];
   }
 
-  UIBlurEffect* effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-  UIVisualEffectView* effectView =
-      [[UIVisualEffectView alloc] initWithEffect:effect];
-  effectView.frame = self.view.frame;
-  effectView.alpha = 0.0;
-
-  [UIView animateWithDuration:0.1
-                   animations:^{
-                     effectView.alpha = 1.0;
-                   }];
-
-  // Do not blur things out if we already know the hash
-  if (![masterHashOrigin_ isEqualToString:self.masterPassword.text]) {
-    [self.view addSubview:effectView];
-    [self.view bringSubviewToFront:self.spinner];
-    [self.spinner startAnimating];
+  self.dataController.masterHash = self.emojiLabel.text;
+  if (self.dataController.applications.count == 0) {
+    if (!after_confirmation) return [self onEmojiTap:self];
   }
 
-  self.view.userInteractionEnabled = NO;
-  [self computeHash:^(NSString* hash) {
-    self.view.userInteractionEnabled = YES;
-    [self.spinner stopAnimating];
-    [UIView animateWithDuration:0.1
-        animations:^{
-          effectView.alpha = 0.0;
-        }
-        completion:^(BOOL finished) {
-          [effectView removeFromSuperview];
-        }];
-
-    self.dataController.masterHash = hash;
-    if (self.dataController.applications.count == 0) {
-      if (!after_confirmation) return [self onEmojiTap:self];
-    }
-
-    [self performSegueWithIdentifier:@"ToApplications" sender:self];
-  }];
+  [self performSegueWithIdentifier:@"ToApplications" sender:self];
 }
 
 

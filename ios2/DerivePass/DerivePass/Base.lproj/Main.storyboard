@@ -59,10 +59,6 @@
                                     <outletCollection property="gestureRecognizers" destination="ZZX-VE-Zae" appends="YES" id="hHE-YV-3h5"/>
                                 </connections>
                             </view>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="k8S-Gr-3x1">
-                                <rect key="frame" x="177.5" y="323.5" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -72,7 +68,6 @@
                         <outlet property="emojiConfirmationLabel" destination="Nfi-oC-u63" id="syv-ti-vpC"/>
                         <outlet property="emojiLabel" destination="fCA-Z2-oCR" id="aw1-Bb-hlF"/>
                         <outlet property="masterPassword" destination="yZF-r2-Cnq" id="LrD-Qr-GHs"/>
-                        <outlet property="spinner" destination="k8S-Gr-3x1" id="kzq-AY-Wgj"/>
                         <segue destination="cCH-5t-r8D" kind="show" identifier="ToApplications" id="qwf-8Z-PAn"/>
                         <segue destination="dPN-eC-r4I" kind="show" identifier="ToTutorial" id="ke2-w5-LIc"/>
                     </connections>

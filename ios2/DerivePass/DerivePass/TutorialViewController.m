@@ -43,6 +43,8 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+
   if (sliding_) return;
 
   if (self.image == nil) {
@@ -61,6 +63,8 @@
 
 
 - (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+
   if (index_ < self.texts.count) [self doSlide];
 }
 

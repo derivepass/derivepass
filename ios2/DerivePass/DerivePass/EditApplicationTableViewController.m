@@ -28,6 +28,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
   self.domainField.text = [self.info valueForKey:@"domain"];
   self.loginField.text = [self.info valueForKey:@"login"];
   self.revisionField.text =

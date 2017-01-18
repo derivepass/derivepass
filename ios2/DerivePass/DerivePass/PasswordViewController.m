@@ -59,6 +59,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 
 - (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
   confirming_ = nil;
   self.emojiLabel.text = kDefaultEmoji;
   self.emojiConfirmationLabel.text = kDefaultEmoji;

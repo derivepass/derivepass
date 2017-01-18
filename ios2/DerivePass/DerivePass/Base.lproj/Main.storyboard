@@ -57,6 +57,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="ZZX-VE-Zae" appends="YES" id="hHE-YV-3h5"/>
+                                    <outletCollection property="gestureRecognizers" destination="tqB-xA-ucn" appends="YES" id="jHv-g7-Tfg"/>
                                 </connections>
                             </view>
                         </subviews>
@@ -78,6 +79,11 @@
                         <action selector="onEmojiTap:" destination="5XO-FJ-yEr" id="E45-I1-G17"/>
                     </connections>
                 </tapGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="tqB-xA-ucn">
+                    <connections>
+                        <action selector="onEmojiTap:" destination="5XO-FJ-yEr" id="ss4-MU-lZj"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="682.5" y="257.5"/>
         </scene>

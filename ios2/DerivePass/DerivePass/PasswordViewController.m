@@ -288,18 +288,16 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   }
 
   UIBlurEffect* effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-  UIVisualEffectView* effectView =
-      [[UIVisualEffectView alloc] initWithEffect:effect];
+  UIVisualEffectView* effectView = [[UIVisualEffectView alloc] init];
   effectView.frame = self.view.frame;
-  effectView.alpha = 0.0;
-
-  [UIView animateWithDuration:0.1
-                   animations:^{
-                     effectView.alpha = 1.0;
-                   }];
 
   // Do not blur things out if we already know the hash
   if (![masterAESOrigin_ isEqualToString:self.masterPassword.text]) {
+    [UIView animateWithDuration:0.25
+                     animations:^{
+                       effectView.effect = effect;
+                     }];
+
     [self.view addSubview:effectView];
     [self.view bringSubviewToFront:self.spinner];
     [self.spinner startAnimating];
@@ -311,7 +309,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
     [self.spinner stopAnimating];
     [UIView animateWithDuration:0.1
         animations:^{
-          effectView.alpha = 0.0;
+          effectView.effect = nil;
         }
         completion:^(BOOL finished) {
           [effectView removeFromSuperview];

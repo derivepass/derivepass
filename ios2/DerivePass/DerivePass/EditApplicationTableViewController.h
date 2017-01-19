@@ -15,7 +15,7 @@
 
 @interface EditApplicationTableViewController : UITableViewController
 
-@property NSManagedObject* info;
+@property Application* info;
 @property ApplicationDataController* dataController;
 
 @end

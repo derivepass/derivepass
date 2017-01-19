@@ -11,6 +11,8 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
+#import "Application+CoreDataProperties.h"
+
 @protocol ApplicationDataControllerDelegate
 
 - (void)onDataUpdate;
@@ -21,14 +23,15 @@
 
 @property(weak) id<ApplicationDataControllerDelegate> delegate;
 @property(strong) NSString* masterHash;
+@property(strong) NSString* AESKey;
 
 - (ApplicationDataController*)init;
 
-- (NSMutableArray<NSManagedObject*>*)applications;
+- (NSMutableArray<Application*>*)applications;
 
-- (NSManagedObject*)allocApplication;
-- (void)pushApplication:(NSManagedObject*)object;
-- (void)deleteApplication:(NSManagedObject*)object;
+- (Application*)allocApplication;
+- (void)pushApplication:(Application*)object;
+- (void)deleteApplication:(Application*)object;
 
 - (void)save;
 

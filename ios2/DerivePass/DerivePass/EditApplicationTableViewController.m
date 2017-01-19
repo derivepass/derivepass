@@ -29,10 +29,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  self.domainField.text = [self.info valueForKey:@"domain"];
-  self.loginField.text = [self.info valueForKey:@"login"];
+  self.domainField.text = self.info.domain;
+  self.loginField.text = self.info.login;
   self.revisionField.text =
-      [NSString stringWithFormat:@"%@", [self.info valueForKey:@"revision"]];
+      [NSString stringWithFormat:@"%d", self.info.revision];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,13 +42,13 @@
 
 // TODO(indutny): move to data controller
 - (IBAction)onSave:(id)sender {
-  [self.info setValue:self.domainField.text forKey:@"domain"];
-  [self.info setValue:self.loginField.text forKey:@"login"];
+  self.info.domain = self.domainField.text;
+  self.info.login = self.loginField.text;
 
   int rev = atoi([self.revisionField.text UTF8String]);
-  [self.info setValue:[NSNumber numberWithInt:rev] forKey:@"revision"];
+  self.info.revision = rev;
 
-  [self.info setValue:[NSDate date] forKey:@"changed_at"];
+  self.info.changed_at = [NSDate date];
   [self.dataController save];
 
   [self.navigationController popViewControllerAnimated:YES];

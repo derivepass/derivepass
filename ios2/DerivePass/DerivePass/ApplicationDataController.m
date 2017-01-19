@@ -19,7 +19,7 @@
 @property(strong) NSManagedObjectContext* managedObjectContext;
 @property(strong) CKDatabase* db;
 
-@property(strong) NSMutableArray<NSManagedObject*>* internalList;
+@property(strong) NSMutableArray<Application*>* internalList;
 
 @end
 
@@ -69,8 +69,7 @@
   NSAssert(store != nil, @"Failed to initialize PSC: %@\n%@",
            [err localizedDescription], [err userInfo]);
 
-  NSFetchRequest* request =
-      [NSFetchRequest fetchRequestWithEntityName:@"Application"];
+  NSFetchRequest* request = [Application fetchRequest];
   request.sortDescriptors =
       @[ [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES] ];
 
@@ -109,8 +108,8 @@
     NSString* uuid = r.recordID.recordName;
 
     BOOL found = NO;
-    for (NSManagedObject* obj in self.internalList) {
-      if ([[obj valueForKey:@"uuid"] isEqualToString:uuid]) {
+    for (Application* obj in self.internalList) {
+      if ([obj.uuid isEqualToString:uuid]) {
         [self mergeCloudItem:r withLocalItem:obj];
         found = YES;
         break;
@@ -119,15 +118,15 @@
 
     if (found) continue;
 
-    NSManagedObject* obj = [self allocApplication];
+    Application* obj = [self allocApplication];
     [self updateObject:obj withRecord:r];
 
     [self.internalList insertObject:obj atIndex:0];
   }
 
   // Second pass: find new local items
-  for (NSManagedObject* obj in self.internalList) {
-    NSString* uuid = [obj valueForKey:@"uuid"];
+  for (Application* obj in self.internalList) {
+    NSString* uuid = obj.uuid;
     BOOL found = NO;
     for (CKRecord* r in items) {
       if (![uuid isEqualToString:r.recordID.recordName]) continue;
@@ -148,20 +147,20 @@
 }
 
 
-- (void)updateObject:(NSManagedObject*)obj withRecord:(CKRecord*)r {
-  [obj setValue:r.recordID.recordName forKey:@"uuid"];
-  [obj setValue:r[@"domain"] forKey:@"domain"];
-  [obj setValue:r[@"login"] forKey:@"login"];
-  [obj setValue:r[@"index"] forKey:@"index"];
-  [obj setValue:r[@"revision"] forKey:@"revision"];
-  [obj setValue:r[@"removed"] forKey:@"removed"];
-  [obj setValue:r.modificationDate forKey:@"changed_at"];
-  [obj setValue:r[@"master"] forKey:@"master"];
+- (void)updateObject:(Application*)obj withRecord:(CKRecord*)r {
+  obj.uuid = r.recordID.recordName;
+  obj.domain = r[@"domain"];
+  obj.login = r[@"login"];
+  obj.index = [r[@"index"] intValue];
+  obj.revision = [r[@"revision"] intValue];
+  obj.removed = r[@"removed"];
+  obj.changed_at = r.modificationDate;
+  obj.master = r[@"master"];
 }
 
 
-- (void)mergeCloudItem:(CKRecord*)item withLocalItem:(NSManagedObject*)obj {
-  NSDate* local = [obj valueForKey:@"changed_at"];
+- (void)mergeCloudItem:(CKRecord*)item withLocalItem:(Application*)obj {
+  NSDate* local = obj.changed_at;
   NSDate* remote = item.modificationDate;
 
   switch ([local compare:remote]) {
@@ -182,9 +181,8 @@
 }
 
 
-- (void)uploadItemToCloud:(NSManagedObject*)obj {
-  CKRecordID* recID =
-      [[CKRecordID alloc] initWithRecordName:[obj valueForKey:@"uuid"]];
+- (void)uploadItemToCloud:(Application*)obj {
+  CKRecordID* recID = [[CKRecordID alloc] initWithRecordName:obj.uuid];
 
   [self.db
       fetchRecordWithID:recID
@@ -203,12 +201,12 @@
                   isEqualToDate:[obj valueForKey:@"changed_at"]])
             return;
 
-          r[@"domain"] = [obj valueForKey:@"domain"];
-          r[@"login"] = [obj valueForKey:@"login"];
-          r[@"index"] = [obj valueForKey:@"index"];
-          r[@"revision"] = [obj valueForKey:@"revision"];
-          r[@"removed"] = [obj valueForKey:@"removed"];
-          r[@"master"] = [obj valueForKey:@"master"];
+          r[@"domain"] = obj.domain;
+          r[@"login"] = obj.login;
+          r[@"index"] = [NSNumber numberWithInt:obj.index];
+          r[@"revision"] = [NSNumber numberWithInt:obj.revision];
+          r[@"removed"] = [NSNumber numberWithBool:obj.removed];
+          r[@"master"] = obj.master;
           [self.db saveRecord:r
               completionHandler:^(CKRecord* _Nullable record,
                                   NSError* _Nullable error) {
@@ -223,39 +221,39 @@
 }
 
 
-- (NSMutableArray<NSManagedObject*>*)applications {
-  NSMutableArray<NSManagedObject*>* res = [NSMutableArray array];
-  for (NSManagedObject* obj in self.internalList)
-    if ([[obj valueForKey:@"master"] isEqualToString:self.masterHash])
+- (NSMutableArray<Application*>*)applications {
+  NSMutableArray<Application*>* res = [NSMutableArray array];
+  for (Application* obj in self.internalList)
+    if ([obj.master isEqualToString:self.masterHash])
       [res insertObject:obj atIndex:res.count];
   return res;
 }
 
 
-- (NSManagedObject*)allocApplication {
-  NSManagedObject* res = [NSEntityDescription
+- (Application*)allocApplication {
+  Application* res = [NSEntityDescription
       insertNewObjectForEntityForName:@"Application"
                inManagedObjectContext:self.managedObjectContext];
-  [res setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
-  [res setValue:[NSDate date] forKey:@"changed_at"];
-  [res setValue:self.masterHash forKey:@"master"];
+  res.uuid = [[NSUUID UUID] UUIDString];
+  res.changed_at = [NSDate date];
+  res.master = self.masterHash;
   return res;
 }
 
 
-- (void)pushApplication:(NSManagedObject*)object {
+- (void)pushApplication:(Application*)object {
   [self.internalList insertObject:object atIndex:self.internalList.count];
 }
 
 
-- (void)deleteApplication:(NSManagedObject*)object {
-  [object setValue:[NSNumber numberWithBool:YES] forKey:@"removed"];
+- (void)deleteApplication:(Application*)object {
+  object.removed = [NSNumber numberWithBool:YES];
 }
 
 
 - (void)save {
   [self sort];
-  for (NSManagedObject* obj in self.internalList) {
+  for (Application* obj in self.internalList) {
     [self uploadItemToCloud:obj];
   }
   [self coreDataSave];
@@ -265,10 +263,12 @@
 - (void)sort {
   [self.internalList sortUsingComparator:^NSComparisonResult(id _Nonnull obj1,
                                                              id _Nonnull obj2) {
-    NSManagedObject* a = obj1;
-    NSManagedObject* b = obj2;
+    Application* a = obj1;
+    Application* b = obj2;
 
-    return [[a valueForKey:@"index"] compare:[b valueForKey:@"index"]];
+    return a.index < b.index
+               ? NSOrderedAscending
+               : a.index > b.index ? NSOrderedDescending : NSOrderedSame;
   }];
 }
 

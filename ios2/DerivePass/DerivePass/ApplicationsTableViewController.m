@@ -52,9 +52,8 @@
 
 - (void)onDataUpdate {
   self.applications = [NSMutableArray array];
-  for (NSManagedObject* obj in self.dataController.applications) {
-    NSNumber* removed = [obj valueForKey:@"removed"];
-    if (removed.intValue) continue;
+  for (Application* obj in self.dataController.applications) {
+    if (obj.removed) continue;
     [self.applications insertObject:obj atIndex:self.applications.count];
   }
 
@@ -78,10 +77,10 @@
       [tableView dequeueReusableCellWithIdentifier:@"ApplicationCell"
                                       forIndexPath:indexPath];
 
-  NSManagedObject* info = self.applications[indexPath.row];
+  Application* info = self.applications[indexPath.row];
 
-  cell.textLabel.text = [info valueForKey:@"domain"];
-  cell.detailTextLabel.text = [info valueForKey:@"login"];
+  cell.textLabel.text = info.domain;
+  cell.detailTextLabel.text = info.login;
 
   return cell;
 }
@@ -89,10 +88,9 @@
 
 - (void)reindex {
   // Update indexes
-  NSUInteger index = 0;
-  for (NSManagedObject* obj in self.applications) {
-    [obj setValue:[NSNumber numberWithInt:(int)index] forKey:@"index"];
-    index++;
+  int index = 0;
+  for (Application* obj in self.applications) {
+    obj.index = index++;
   }
 }
 
@@ -100,7 +98,7 @@
 - (void)tableView:(UITableView*)tableView
     moveRowAtIndexPath:(NSIndexPath*)fromIndexPath
            toIndexPath:(NSIndexPath*)toIndexPath {
-  NSManagedObject* info = self.applications[fromIndexPath.row];
+  Application* info = self.applications[fromIndexPath.row];
   [self.applications removeObjectAtIndex:fromIndexPath.row];
   [self.applications insertObject:info atIndex:toIndexPath.row];
 
@@ -114,7 +112,7 @@
     commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
      forRowAtIndexPath:(NSIndexPath*)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
-    NSManagedObject* app = self.applications[indexPath.row];
+    Application* app = self.applications[indexPath.row];
     [self.applications removeObjectAtIndex:indexPath.row];
 
     [self.dataController deleteApplication:app];
@@ -132,10 +130,10 @@
 
   ApplicationTableViewCell* cell =
       [self.tableView cellForRowAtIndexPath:indexPath];
-  NSManagedObject* info = self.applications[indexPath.row];
+  Application* info = self.applications[indexPath.row];
   __block const char* master = self.masterPassword.UTF8String;
-  const char* domain = [[info valueForKey:@"domain"] UTF8String];
-  const char* login = [[info valueForKey:@"login"] UTF8String];
+  const char* domain = info.domain.UTF8String;
+  const char* login = info.login.UTF8String;
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
@@ -150,12 +148,10 @@
     __block char* out;
 
     __block char tmp[1024];
-    NSNumber* rev = [info valueForKey:@"revision"];
-    if (rev.integerValue <= 1) {
+    if (info.revision <= 1) {
       snprintf(tmp, sizeof(tmp), "%s/%s", domain, login);
     } else {
-      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domain, login,
-               (int)rev.integerValue);
+      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domain, login, info.revision);
     }
 
     state.n = kDeriveScryptN;
@@ -218,13 +214,12 @@
 
 
 - (IBAction)onAdd:(id)sender {
-  NSManagedObject* info = [self.dataController allocApplication];
+  Application* info = [self.dataController allocApplication];
 
-  [info setValue:@"gmail.com" forKey:@"domain"];
-  [info setValue:@"my username" forKey:@"login"];
-  [info setValue:[NSNumber numberWithInt:1] forKey:@"revision"];
-  [info setValue:[NSNumber numberWithInt:(int)self.applications.count]
-          forKey:@"index"];
+  info.domain = @"gmail.com";
+  info.login = @"my username";
+  info.revision = 1;
+  info.index = (int)self.applications.count;
 
   [self.applications insertObject:info atIndex:self.applications.count];
   [self.dataController pushApplication:info];

@@ -256,7 +256,7 @@
 
 
 - (void)deleteApplication:(Application*)object {
-  object.removed = [NSNumber numberWithBool:YES];
+  object.removed = YES;
 }
 
 

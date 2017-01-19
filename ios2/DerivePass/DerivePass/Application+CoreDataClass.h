@@ -21,10 +21,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)encryptNumber:(int32_t)num;
 - (int32_t)decryptNumber:(NSString*)str;
 
-
 @end
 
-@interface Application : NSManagedObject
+@interface Application : NSManagedObject {
+  // TODO(indutny): these should be private!
+  // That's some unfortunate placing of these properties...
+  NSString* domainEnc;
+  NSString* domainClear;
+  NSString* loginEnc;
+  NSString* loginClear;
+  NSString* revisionEnc;
+  int32_t revisionClear;
+}
 
 @property(weak) id<ApplicationCryptor> cryptor;
 

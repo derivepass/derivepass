@@ -28,7 +28,11 @@
 
 
 - (NSString *)plaintextDomain {
-  return [self.cryptor decrypt:[self valueForKey:@"domain"]];
+  NSString *encrypted = [self valueForKey:@"domain"];
+  if (encrypted == domainEnc) return domainClear;
+  domainEnc = encrypted;
+  domainClear = [self.cryptor decrypt:encrypted];
+  return domainClear;
 }
 
 
@@ -38,7 +42,11 @@
 
 
 - (NSString *)plaintextLogin {
-  return [self.cryptor decrypt:[self valueForKey:@"login"]];
+  NSString *encrypted = [self valueForKey:@"login"];
+  if (encrypted == loginEnc) return loginClear;
+  loginEnc = encrypted;
+  loginClear = [self.cryptor decrypt:encrypted];
+  return loginClear;
 }
 
 
@@ -48,7 +56,11 @@
 
 
 - (int32_t)plainRevision {
-  return [self.cryptor decryptNumber:[self valueForKey:@"revision"]];
+  NSString *encrypted = [self valueForKey:@"revision"];
+  if (encrypted == revisionEnc) return revisionClear;
+  revisionEnc = encrypted;
+  revisionClear = [self.cryptor decryptNumber:encrypted];
+  return revisionClear;
 }
 
 @end

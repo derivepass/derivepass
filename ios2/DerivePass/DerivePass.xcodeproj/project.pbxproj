@@ -21,6 +21,8 @@
 		4D8F98041E29DA780070B586 /* scrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D8F98031E29DA780070B586 /* scrypt.framework */; };
 		4D8F980A1E29DAA40070B586 /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F98051E29DAA40070B586 /* common.c */; };
 		4D8F980B1E29DAA40070B586 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F98071E29DAA40070B586 /* util.c */; };
+		4D94A8451E31452500D5E202 /* Application+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D94A8421E31452500D5E202 /* Application+CoreDataClass.m */; };
+		4D94A8461E31452500D5E202 /* Application+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D94A8441E31452500D5E202 /* Application+CoreDataProperties.m */; };
 		4DE570331E2A9DF100D55FBA /* ApplicationsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE570321E2A9DF100D55FBA /* ApplicationsTableViewController.m */; };
 		4DE5703F1E2AB7F600D55FBA /* EditApplicationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5703E1E2AB7F600D55FBA /* EditApplicationTableViewController.m */; };
 		4DE570421E2AD6DF00D55FBA /* ApplicationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE570411E2AD6DF00D55FBA /* ApplicationTableViewCell.m */; };
@@ -55,6 +57,10 @@
 		4D8F98071E29DAA40070B586 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = util.c; path = ../../../src/util.c; sourceTree = "<group>"; };
 		4D8F98081E29DAA40070B586 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../../src/util.h; sourceTree = "<group>"; };
 		4D8F98091E29DAA40070B586 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = ../../../src/version.h; sourceTree = "<group>"; };
+		4D94A8411E31452500D5E202 /* Application+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Application+CoreDataClass.h"; sourceTree = "<group>"; };
+		4D94A8421E31452500D5E202 /* Application+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Application+CoreDataClass.m"; sourceTree = "<group>"; };
+		4D94A8431E31452500D5E202 /* Application+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Application+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4D94A8441E31452500D5E202 /* Application+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Application+CoreDataProperties.m"; sourceTree = "<group>"; };
 		4DE570311E2A9DF100D55FBA /* ApplicationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationsTableViewController.h; sourceTree = "<group>"; };
 		4DE570321E2A9DF100D55FBA /* ApplicationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationsTableViewController.m; sourceTree = "<group>"; };
 		4DE5703D1E2AB7F600D55FBA /* EditApplicationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditApplicationTableViewController.h; sourceTree = "<group>"; };
@@ -111,6 +117,10 @@
 				4DE570241E2A6ECE00D55FBA /* libderivepass */,
 				4D8F97E91E29D9FF0070B586 /* AppDelegate.h */,
 				4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */,
+				4D94A8411E31452500D5E202 /* Application+CoreDataClass.h */,
+				4D94A8421E31452500D5E202 /* Application+CoreDataClass.m */,
+				4D94A8431E31452500D5E202 /* Application+CoreDataProperties.h */,
+				4D94A8441E31452500D5E202 /* Application+CoreDataProperties.m */,
 				4DE570491E2AE47500D55FBA /* ApplicationDataController.h */,
 				4DE5704A1E2AE47500D55FBA /* ApplicationDataController.m */,
 				4DE570401E2AD6DF00D55FBA /* ApplicationTableViewCell.h */,
@@ -248,6 +258,7 @@
 				4D8F980A1E29DAA40070B586 /* common.c in Sources */,
 				4D8F97EB1E29D9FF0070B586 /* AppDelegate.m in Sources */,
 				4D8F97E81E29D9FF0070B586 /* main.m in Sources */,
+				4D94A8461E31452500D5E202 /* Application+CoreDataProperties.m in Sources */,
 				4DE5703F1E2AB7F600D55FBA /* EditApplicationTableViewController.m in Sources */,
 				4DE570331E2A9DF100D55FBA /* ApplicationsTableViewController.m in Sources */,
 				4DE570421E2AD6DF00D55FBA /* ApplicationTableViewCell.m in Sources */,
@@ -257,6 +268,7 @@
 				4D6349DE1E2D2E680051D4DF /* TutorialViewController.m in Sources */,
 				4DE5704B1E2AE47500D55FBA /* ApplicationDataController.m in Sources */,
 				4D6349D21E2D218F0051D4DF /* DerivePass.xcdatamodeld in Sources */,
+				4D94A8451E31452500D5E202 /* Application+CoreDataClass.m in Sources */,
 				4D6349E11E2D45690051D4DF /* TutorialFinalViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

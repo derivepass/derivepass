@@ -12,4 +12,6 @@
 
 @implementation Application
 
+@synthesize cryptor;
+
 @end

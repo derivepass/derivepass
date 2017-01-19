@@ -17,12 +17,38 @@
 }
 
 @dynamic changed_at;
-@dynamic domain;
 @dynamic index;
-@dynamic login;
 @dynamic master;
 @dynamic removed;
-@dynamic revision;
 @dynamic uuid;
+
+- (void)setPlaintextDomain:(NSString *)domain {
+  [self setValue:[self.cryptor encrypt:domain] forKey:@"domain"];
+}
+
+
+- (NSString *)plaintextDomain {
+  return [self.cryptor decrypt:[self valueForKey:@"domain"]];
+}
+
+
+- (void)setPlaintextLogin:(NSString *)login {
+  [self setValue:[self.cryptor encrypt:login] forKey:@"login"];
+}
+
+
+- (NSString *)plaintextLogin {
+  return [self.cryptor decrypt:[self valueForKey:@"login"]];
+}
+
+
+- (void)setPlainRevision:(int32_t)revision {
+  [self setValue:[self.cryptor encryptNumber:revision] forKey:@"revision"];
+}
+
+
+- (int32_t)plainRevision {
+  return [self.cryptor decryptNumber:[self valueForKey:@"revision"]];
+}
 
 @end

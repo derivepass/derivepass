@@ -71,6 +71,7 @@
   return self.applications.count;
 }
 
+
 - (UITableViewCell*)tableView:(UITableView*)tableView
         cellForRowAtIndexPath:(NSIndexPath*)indexPath {
   UITableViewCell* cell =
@@ -79,8 +80,8 @@
 
   Application* info = self.applications[indexPath.row];
 
-  cell.textLabel.text = info.domain;
-  cell.detailTextLabel.text = info.login;
+  cell.textLabel.text = info.plaintextDomain;
+  cell.detailTextLabel.text = info.plaintextLogin;
 
   return cell;
 }
@@ -132,8 +133,8 @@
       [self.tableView cellForRowAtIndexPath:indexPath];
   Application* info = self.applications[indexPath.row];
   __block const char* master = self.masterPassword.UTF8String;
-  const char* domain = info.domain.UTF8String;
-  const char* login = info.login.UTF8String;
+  const char* domain = info.plaintextDomain.UTF8String;
+  const char* login = info.plaintextLogin.UTF8String;
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
@@ -148,10 +149,10 @@
     __block char* out;
 
     __block char tmp[1024];
-    if (info.revision <= 1) {
+    if (info.plainRevision <= 1) {
       snprintf(tmp, sizeof(tmp), "%s/%s", domain, login);
     } else {
-      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domain, login, info.revision);
+      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domain, login, info.plainRevision);
     }
 
     state.n = kDeriveScryptN;
@@ -216,9 +217,9 @@
 - (IBAction)onAdd:(id)sender {
   Application* info = [self.dataController allocApplication];
 
-  info.domain = @"gmail.com";
-  info.login = @"my username";
-  info.revision = 1;
+  info.plaintextDomain = @"gmail.com";
+  info.plaintextLogin = @"my username";
+  info.plainRevision = 1;
   info.index = (int)self.applications.count;
 
   [self.applications insertObject:info atIndex:self.applications.count];

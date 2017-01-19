@@ -10,8 +10,11 @@
 
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
+#import <CommonCrypto/CommonCryptor.h>
 
 #import "Application+CoreDataProperties.h"
+
+static int kApplicationDataKeySize = kCCKeySizeAES256;
 
 @protocol ApplicationDataControllerDelegate
 
@@ -23,7 +26,7 @@
 
 @property(weak) id<ApplicationDataControllerDelegate> delegate;
 @property(strong) NSString* masterHash;
-@property(strong) NSString* AESKey;
+@property(strong) NSData* AESKey;
 
 - (ApplicationDataController*)init;
 

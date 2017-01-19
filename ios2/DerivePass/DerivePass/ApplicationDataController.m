@@ -11,10 +11,12 @@
 #import "ApplicationDataController.h"
 
 #import <CloudKit/CloudKit.h>
+#import <CommonCrypto/CommonCryptor.h>
+#import <Security/SecRandom.h>
 
 #include <dispatch/dispatch.h>
 
-@interface ApplicationDataController ()
+@interface ApplicationDataController ()<ApplicationCryptor>
 
 @property(strong) NSManagedObjectContext* managedObjectContext;
 @property(strong) CKDatabase* db;
@@ -79,6 +81,7 @@
            [err localizedDescription], [err userInfo]);
 
   self.internalList = [NSMutableArray arrayWithArray:res];
+  for (Application* app in self.internalList) app.cryptor = self;
 }
 
 
@@ -86,8 +89,8 @@
   self.db = [[CKContainer defaultContainer] privateCloudDatabase];
 
   NSPredicate* every = [NSPredicate predicateWithValue:YES];
-  CKQuery* q =
-      [[CKQuery alloc] initWithRecordType:@"Application" predicate:every];
+  CKQuery* q = [[CKQuery alloc] initWithRecordType:@"EncryptedApplication"
+                                         predicate:every];
   [self.db performQuery:q
            inZoneWithID:nil
       completionHandler:^(NSArray<CKRecord*>* _Nullable results,
@@ -149,13 +152,16 @@
 
 - (void)updateObject:(Application*)obj withRecord:(CKRecord*)r {
   obj.uuid = r.recordID.recordName;
-  obj.domain = r[@"domain"];
-  obj.login = r[@"login"];
   obj.index = [r[@"index"] intValue];
-  obj.revision = [r[@"revision"] intValue];
   obj.removed = [r[@"removed"] intValue];
   obj.changed_at = r.modificationDate;
   obj.master = r[@"master"];
+
+  // NOTE: copying them as they are, because we can't
+  // decrypt them at this point
+  [obj setValue:r[@"domain"] forKey:@"domain"];
+  [obj setValue:r[@"login"] forKey:@"login"];
+  [obj setValue:r[@"revision"] forKey:@"revision"];
 }
 
 
@@ -188,7 +194,7 @@
       fetchRecordWithID:recID
       completionHandler:^(CKRecord* _Nullable r, NSError* _Nullable error) {
         if (error.code == CKErrorUnknownItem) {
-          r = [[CKRecord alloc] initWithRecordType:@"Application"
+          r = [[CKRecord alloc] initWithRecordType:@"EncryptedApplication"
                                           recordID:recID];
         } else if (error != nil) {
           // TODO(indutny): handle errors
@@ -201,10 +207,12 @@
                   isEqualToDate:[obj valueForKey:@"changed_at"]])
             return;
 
-          r[@"domain"] = obj.domain;
-          r[@"login"] = obj.login;
+          // Copy these as they are, because they are encrypted
+          r[@"domain"] = [obj valueForKey:@"domain"];
+          r[@"login"] = [obj valueForKey:@"login"];
+          r[@"revision"] = [obj valueForKey:@"revision"];
+
           r[@"index"] = [NSNumber numberWithInt:obj.index];
-          r[@"revision"] = [NSNumber numberWithInt:obj.revision];
           r[@"removed"] = [NSNumber numberWithBool:obj.removed];
           r[@"master"] = obj.master;
           [self.db saveRecord:r
@@ -237,6 +245,7 @@
   res.uuid = [[NSUUID UUID] UUIDString];
   res.changed_at = [NSDate date];
   res.master = self.masterHash;
+  res.cryptor = self;
   return res;
 }
 
@@ -248,6 +257,108 @@
 
 - (void)deleteApplication:(Application*)object {
   object.removed = [NSNumber numberWithBool:YES];
+}
+
+
+- (uint8_t)hexDigit:(char)digit {
+  if ('0' <= digit && digit <= '9')
+    return digit - '0';
+  else if ('a' <= digit && digit <= 'f')
+    return (digit - 'a') + 0xa;
+  else if ('A' <= digit && digit <= 'F')
+    return (digit - 'A') + 0xa;
+  else
+    NSAssert(NO, @"Invalid HEX digit");
+  return 0;
+}
+
+
+- (NSData*)fromHex:(NSString*)str {
+  const char* bytes = str.UTF8String;
+  int len = (int)str.length;
+  NSAssert(len % 2 == 0, @"Invalid HEX string");
+
+  NSMutableData* res = [NSMutableData dataWithLength:len / 2];
+  uint8_t* o = (uint8_t*)res.mutableBytes;
+  for (int i = 0; i < len; i += 2) {
+    char h = bytes[i];
+    char l = bytes[i + 1];
+
+    o[i / 2] = ([self hexDigit:h] << 4) | [self hexDigit:l];
+  }
+  return res;
+}
+
+
+- (NSString*)toHex:(NSData*)data {
+  NSMutableString* res = [NSMutableString stringWithCapacity:data.length * 2];
+
+  const uint8_t* bytes = (const uint8_t*)data.bytes;
+  for (int i = 0; i < (int)data.length; i++) {
+    [res appendFormat:@"%02x", bytes[i]];
+  }
+
+  return res;
+}
+
+
+- (NSString*)encrypt:(NSString*)str {
+  NSAssert(self.AESKey.length == kApplicationDataKeySize,
+           @"Invalid AES key length");
+  
+  NSMutableData* res =
+      [NSMutableData dataWithLength:kCCBlockSizeAES128 * 2 + str.length];
+  NSAssert(res != nil, @"Failed to allocated mutable output for encrypt");
+
+  // Set IV
+  int err = SecRandomCopyBytes(kSecRandomDefault, kCCBlockSizeAES128,
+                               res.mutableBytes);
+  NSAssert(err == 0, @"SecRandomCopyBytes failure");
+
+  size_t bytes;
+  CCCryptorStatus st;
+  st = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
+               self.AESKey.bytes, self.AESKey.length,
+               res.bytes,
+               (void*)str.UTF8String, str.length,
+               res.mutableBytes + kCCBlockSizeAES128, res.length - kCCBlockSizeAES128, &bytes);
+  NSAssert(st == kCCSuccess, @"CCCrypt encrypt failure");
+  
+  res.length = kCCBlockSizeAES128 + bytes;
+
+  return [self toHex:res];
+}
+
+
+- (NSString*)decrypt:(NSString*)str {
+  NSAssert(self.AESKey.length == kApplicationDataKeySize,
+           @"Invalid AES key length");
+
+  NSData* data = [self fromHex:str];
+  NSAssert(data.length > kCCBlockSizeAES128, @"Invalid encrypted data length");
+
+  NSMutableData* res = [NSMutableData dataWithLength:data.length];
+  NSAssert(res != nil, @"Failed to allocated mutable output for decrypt");
+
+  size_t bytes;
+  CCCryptorStatus err;
+  err = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
+                self.AESKey.bytes, self.AESKey.length, data.bytes,
+                data.bytes + kCCBlockSizeAES128, data.length - kCCBlockSizeAES128,
+                res.mutableBytes, res.length, &bytes);
+  NSAssert(err == kCCSuccess, @"CCCrypt decrypt failure");
+
+  return [NSString stringWithFormat:@"%.*s", (int)bytes, res.bytes];
+}
+
+
+- (NSString*)encryptNumber:(int32_t)num {
+  return [self encrypt:[NSString stringWithFormat:@"%d", num]];
+}
+
+
+- (int32_t)decryptNumber:(NSString*)str {
+  return atoi([self decrypt:str].UTF8String);
 }
 
 

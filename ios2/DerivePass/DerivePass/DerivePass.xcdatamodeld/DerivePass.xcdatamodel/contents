@@ -7,7 +7,7 @@
         <attribute name="login" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="master" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="removed" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="revision" attributeType="Integer 32" minValueString="0" defaultValueString="1" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="revision" attributeType="String" minValueString="0" syncable="YES"/>
         <attribute name="uuid" attributeType="String" minValueString="1" syncable="YES"/>
     </entity>
     <elements>

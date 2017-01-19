@@ -13,7 +13,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol ApplicationCryptor
+
+- (NSString*)encrypt:(NSString*)str;
+- (NSString*)decrypt:(NSString*)str;
+
+- (NSString*)encryptNumber:(int32_t)num;
+- (int32_t)decryptNumber:(NSString*)str;
+
+
+@end
+
 @interface Application : NSManagedObject
+
+@property(weak) id<ApplicationCryptor> cryptor;
 
 @end
 

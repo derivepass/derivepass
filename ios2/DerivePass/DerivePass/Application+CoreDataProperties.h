@@ -17,13 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSFetchRequest<Application *> *)fetchRequest;
 
+// Auto-encrypted/-decrypted
+@property(nullable, nonatomic, copy) NSString *plaintextDomain;
+@property(nullable, nonatomic, copy) NSString *plaintextLogin;
+@property(nonatomic) int32_t plainRevision;
+
 @property(nullable, nonatomic, copy) NSDate *changed_at;
-@property(nullable, nonatomic, copy) NSString *domain;
 @property(nonatomic) int32_t index;
-@property(nullable, nonatomic, copy) NSString *login;
 @property(nullable, nonatomic, copy) NSString *master;
 @property(nonatomic) BOOL removed;
-@property(nonatomic) int32_t revision;
 @property(nullable, nonatomic, copy) NSString *uuid;
 
 @end

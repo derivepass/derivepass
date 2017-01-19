@@ -41,8 +41,8 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 @implementation PasswordViewController {
   NSString* confirming_;
-  NSString* masterHashOrigin_;
-  NSString* masterHash_;
+  NSString* masterAESOrigin_;
+  NSData* masterAES_;
   uint64_t baton_;
 }
 
@@ -200,20 +200,20 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   dispatch_after(when, dispatch_get_main_queue(), ^{
     if (baton != baton_) return;
 
-    [self computeHash:nil];
+    [self computeAESKey:nil];
   });
 }
 
 
-- (void)computeHash:(void (^)(NSString*))completion {
+- (void)computeAESKey:(void (^)(NSData*))completion {
   dispatch_queue_t queue =
       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
   __block NSString* origin = self.masterPassword.text;
 
   // Cached already
-  if (masterHashOrigin_ == origin) {
-    if (completion != nil) completion(masterHash_);
+  if (masterAESOrigin_ == origin) {
+    if (completion != nil) completion(masterAES_);
     return;
   }
 
@@ -221,7 +221,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   if ((baton_ & 1) == 1) {
     dispatch_async(queue, ^{
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self computeHash:completion];
+        [self computeAESKey:completion];
       });
     });
     return;
@@ -230,23 +230,35 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   baton_ |= 1;
   dispatch_async(queue, ^{
     scrypt_state_t state;
-    __block char* out;
 
     state.n = kDeriveScryptN;
     state.r = kDeriveScryptR;
     state.p = kDeriveScryptP;
-
-    out = derive(&state, origin.UTF8String, kScryptAES);
-    NSAssert(out != NULL, @"Failed to derive");
+    
+    uint8_t aes_key[kApplicationDataKeySize];
+    int err;
+    
+    err = scrypt_state_init(&state);
+    assert(err == 0);
+    
+    scrypt(&state,
+           (const uint8_t*) origin.UTF8String,
+           origin.length,
+           (const uint8_t*) kScryptAES,
+           sizeof(kScryptAES),
+           aes_key,
+           sizeof(aes_key));
+    scrypt_state_destroy(&state);
+    
+    __block NSData* out_data = [NSData dataWithBytes: aes_key length: sizeof(aes_key)];
 
     dispatch_async(dispatch_get_main_queue(), ^{
       baton_ ^= 1;
 
-      masterHash_ = [NSString stringWithUTF8String:out];
-      masterHashOrigin_ = origin;
-      free(out);
+      masterAES_ = out_data;
+      masterAESOrigin_ = origin;
 
-      if (completion != nil) completion(masterHash_);
+      if (completion != nil) completion(masterAES_);
     });
   });
 }
@@ -290,14 +302,14 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
                    }];
 
   // Do not blur things out if we already know the hash
-  if (![masterHashOrigin_ isEqualToString:self.masterPassword.text]) {
+  if (![masterAESOrigin_ isEqualToString:self.masterPassword.text]) {
     [self.view addSubview:effectView];
     [self.view bringSubviewToFront:self.spinner];
     [self.spinner startAnimating];
   }
 
   self.view.userInteractionEnabled = NO;
-  [self computeHash:^(NSString* hash) {
+  [self computeAESKey:^(NSData* key) {
     self.view.userInteractionEnabled = YES;
     [self.spinner stopAnimating];
     [UIView animateWithDuration:0.1
@@ -308,7 +320,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
           [effectView removeFromSuperview];
         }];
 
-    self.dataController.AESKey = hash;
+    self.dataController.AESKey = key;
 
     [self performSegueWithIdentifier:@"ToApplications" sender:self];
   }];

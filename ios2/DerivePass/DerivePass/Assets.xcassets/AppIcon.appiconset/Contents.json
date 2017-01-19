@@ -45,7 +45,7 @@
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "derivepass-180x180-crushed.png",
+      "filename" : "derivepass-180x180-sharp.png",
       "scale" : "3x"
     },
     {
@@ -95,7 +95,7 @@
     {
       "size" : "83.5x83.5",
       "idiom" : "ipad",
-      "filename" : "derivepass-167x167-crushed.png",
+      "filename" : "derivepass-167x167-sharp.png",
       "scale" : "2x"
     }
   ],

@@ -257,6 +257,11 @@
 
 - (void)deleteApplication:(Application*)object {
   object.removed = YES;
+
+  // Clean-up encrypted data
+  object.plainRevision = 1;
+  object.plaintextLogin = @"";
+  object.plaintextDomain = @"";
 }
 
 

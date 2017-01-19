@@ -234,23 +234,20 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
     state.n = kDeriveScryptN;
     state.r = kDeriveScryptR;
     state.p = kDeriveScryptP;
-    
+
     uint8_t aes_key[kApplicationDataKeySize];
     int err;
-    
+
     err = scrypt_state_init(&state);
     assert(err == 0);
-    
-    scrypt(&state,
-           (const uint8_t*) origin.UTF8String,
-           origin.length,
-           (const uint8_t*) kScryptAES,
-           sizeof(kScryptAES),
-           aes_key,
+
+    scrypt(&state, (const uint8_t*)origin.UTF8String, origin.length,
+           (const uint8_t*)kScryptAES, sizeof(kScryptAES), aes_key,
            sizeof(aes_key));
     scrypt_state_destroy(&state);
-    
-    __block NSData* out_data = [NSData dataWithBytes: aes_key length: sizeof(aes_key)];
+
+    __block NSData* out_data =
+        [NSData dataWithBytes:aes_key length:sizeof(aes_key)];
 
     dispatch_async(dispatch_get_main_queue(), ^{
       baton_ ^= 1;

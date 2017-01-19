@@ -305,7 +305,7 @@
 - (NSString*)encrypt:(NSString*)str {
   NSAssert(self.AESKey.length == kApplicationDataKeySize,
            @"Invalid AES key length");
-  
+
   NSMutableData* res =
       [NSMutableData dataWithLength:kCCBlockSizeAES128 * 2 + str.length];
   NSAssert(res != nil, @"Failed to allocated mutable output for encrypt");
@@ -318,12 +318,12 @@
   size_t bytes;
   CCCryptorStatus st;
   st = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-               self.AESKey.bytes, self.AESKey.length,
-               res.bytes,
+               self.AESKey.bytes, self.AESKey.length, res.bytes,
                (void*)str.UTF8String, str.length,
-               res.mutableBytes + kCCBlockSizeAES128, res.length - kCCBlockSizeAES128, &bytes);
+               res.mutableBytes + kCCBlockSizeAES128,
+               res.length - kCCBlockSizeAES128, &bytes);
   NSAssert(st == kCCSuccess, @"CCCrypt encrypt failure");
-  
+
   res.length = kCCBlockSizeAES128 + bytes;
 
   return [self toHex:res];
@@ -342,10 +342,10 @@
 
   size_t bytes;
   CCCryptorStatus err;
-  err = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-                self.AESKey.bytes, self.AESKey.length, data.bytes,
-                data.bytes + kCCBlockSizeAES128, data.length - kCCBlockSizeAES128,
-                res.mutableBytes, res.length, &bytes);
+  err = CCCrypt(
+      kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding, self.AESKey.bytes,
+      self.AESKey.length, data.bytes, data.bytes + kCCBlockSizeAES128,
+      data.length - kCCBlockSizeAES128, res.mutableBytes, res.length, &bytes);
   NSAssert(err == kCCSuccess, @"CCCrypt decrypt failure");
 
   return [NSString stringWithFormat:@"%.*s", (int)bytes, res.bytes];

@@ -8,9 +8,9 @@
 //  Copyright © 2017 Indutny Inc. All rights reserved.
 //
 
+#import <CommonCrypto/CommonCryptor.h>
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonCryptor.h>
 
 #import "Application+CoreDataProperties.h"
 

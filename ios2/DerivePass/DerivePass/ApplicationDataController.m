@@ -153,7 +153,7 @@
   obj.login = r[@"login"];
   obj.index = [r[@"index"] intValue];
   obj.revision = [r[@"revision"] intValue];
-  obj.removed = r[@"removed"];
+  obj.removed = [r[@"removed"] intValue];
   obj.changed_at = r.modificationDate;
   obj.master = r[@"master"];
 }

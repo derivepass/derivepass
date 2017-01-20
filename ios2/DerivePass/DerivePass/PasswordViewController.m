@@ -11,20 +11,11 @@
 #import "PasswordViewController.h"
 #import "ApplicationDataController.h"
 #import "ApplicationsTableViewController.h"
+#import "Helpers.h"
 
-#import <CommonCrypto/CommonDigest.h>
 #import <QuartzCore/QuartzCore.h>
 #import <dispatch/dispatch.h>  // dispatch_queue_t
 
-#include <stdint.h>
-#include <string.h>
-
-#include "src/common.h"
-
-#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-
-static const char* kScryptAES = "derivepass/aes/";
-static NSString* const kDefaultEmoji = @"😬";
 static NSString* const kMasterPlaceholder = @"Master Password";
 static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
@@ -91,100 +82,13 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 
 - (IBAction)onPasswordChange:(id)sender {
-  // NOTE: Inspired by some unknown application on the internet
-  static char* smile[] = {
-      "😀",    "😃",      "😄",    "😆", "😅",    "😂",    "☺️", "😊",
-      "😇",    "🙂",   "🙃", "😉", "😌",    "😍",    "😘",      "😗",
-      "😙",    "😚",      "😋",    "😜", "😝",    "😛",    "🤑",   "🤗",
-      "🤓", "😎",      "😏",    "😒", "😞",    "😔",    "😟",      "😬",
-      "🙁", "☹️", "😣",    "😖", "😫",    "😩",    "😤",      "😕",
-      "😡",    "😶",      "😐",    "😑", "😯",    "😦",    "😧",      "😮",
-      "😲",    "😵",      "😳",    "😨", "😰",    "😢",    "😥",      "😁",
-      "😭",    "😓",      "😪",    "😴", "🙄", "🤔", "😠",      "🤐",
-      "😷",    "🤒",   "🤕", "😈", "👿",    "👻",    "💀",      "☠️",
-      "👽",    "👾",      "🤖", "🎃", "😺",    "😸",    "😹",      "😻",
-      "😼",    "😽",      "😿",    "😾"};
-  static char* gesture[] = {"👐", "👌",      "👏", "🙏",    "👍", "👎", "👊",
-                            "✊", "✌️", "🙌", "🤘", "👈", "👉", "👆",
-                            "👇", "☝️", "✋", "🖖", "👋", "💪"};
-  static char* animal[] = {
-      "🐶",    "🐱",    "🐭",    "🐹", "🐰",    "🐻",    "🐼",   "🐨", "🐯", "🦁",
-      "🦃", "🐷",    "🐮",    "🐵", "🐒",    "🐔",    "🐧",   "🐦", "🐤", "🐣",
-      "🐥",    "🐺",    "🐗",    "🐴", "🦄", "🐝",    "🐛",   "🐌", "🐚", "🐞",
-      "🐜",    "🕷", "🐢",    "🐍", "🦂", "🦀", "🐙",   "🐠", "🐟", "🐡",
-      "🐬",    "🐳",    "🐋",    "🐊", "🐆",    "🐅",    "🐃",   "🐂", "🐄", "🐪",
-      "🐫",    "🐘",    "🐎",    "🐖", "🐐",    "🐏",    "🐑",   "🐕", "🐩", "🐈",
-      "🐓",    "🐽",    "🕊", "🐇", "🐁",    "🐀",    "🐿"};
-  static char* food[] = {
-      "🍏", "🍎", "🍐",      "🍊", "🍋", "🍌",    "🍉", "🍇", "🍓",    "🍈",    "🍒",
-      "🍑", "🍍", "🍅",      "🍆", "🌽", "🌶", "🍠", "🌰", "🍯",    "🍞",    "🧀",
-      "🍳", "🍤", "🍗",      "🍖", "🍕", "🌭", "🍔", "🍟", "🌮", "🌯", "🍝",
-      "🍜", "🍲", "🍥",      "🍣", "🍱", "🍛",    "🍚", "🍙", "🍘",    "🍢",    "🍡",
-      "🍧", "🍨", "🍦",      "🍺", "🎂", "🍮",    "🍭", "🍬", "🍫",    "🍿", "🍩",
-      "🍪", "🍰", "☕️", "🍵", "🍶", "🍼",    "🍻", "🍷", "🍸",    "🍹",    "🍾"};
-  static char* object[] = {
-      "⌚️", "📱",      "💻",       "⌨️", "🖥",   "🖨", "🖱",
-      "🖲",   "🕹",   "🗜",    "💾",      "💿",      "📼",    "📷",
-      "🗑",   "🎞",   "📞",       "☎️", "📟",      "📠",    "📺",
-      "📻",      "🎙",   "⏱",       "⌛️", "📡",      "🔋",    "🔌",
-      "💡",      "🔦",      "🕯",    "💷",      "🛢",   "💵",    "💴",
-      "🎥",      "💶",      "💳",       "💎",      "⚖️", "🔧",    "🔨",
-      "🔩",      "⚙️", "🔫",       "💣",      "🔪",      "🗡", "🚬",
-      "🔮",      "📿",   "💈",       "⚗️", "🔭",      "🔬",    "🕳",
-      "💊",      "💉",      "🌡",    "🚽",      "🚰",      "🛁",    "🛎",
-      "🗝",   "🚪",      "🛋",    "🛏",   "🖼",   "🛍", "🎁",
-      "🎈",      "🎀",      "🎉",       "✉️", "📦",      "🏷", "📫",
-      "📯",      "📜",      "📆",       "📅",      "📇",      "🗃", "🗄",
-      "📋",      "📂",      "🗞",    "📓",      "📖",      "🔗",    "📎",
-      "📐",      "📌",      "🏳️", "🌈",      "✂️", "🖌", "✏️",
-      "🔍",      "🔒",      "🍴"};
-
-  NSString* value =
-      [NSString stringWithFormat:@"derivepass/%@", self.masterPassword.text];
-  const char* utf8value = value.UTF8String;
-
-  // No password - display default emoji
-  if (self.masterPassword.text.length == 0) {
-    if (confirming_)
-      self.emojiConfirmationLabel.text = kDefaultEmoji;
-    else
-      self.emojiLabel.text = kDefaultEmoji;
-    return;
-  }
-
-  unsigned char digest[CC_SHA512_DIGEST_LENGTH];
-  CC_SHA512(utf8value, (CC_LONG)strlen(utf8value), digest);
-
-  static char** alphabet[] = {smile, gesture, animal, food, object};
-  static unsigned int alphabet_size[] = {ARRAY_SIZE(smile), ARRAY_SIZE(gesture),
-                                         ARRAY_SIZE(animal), ARRAY_SIZE(food),
-                                         ARRAY_SIZE(object)};
-
-  uint64_t fingerprint =
-      digest[4] | (digest[5] << 8) | (digest[6] << 16) | (digest[7] << 24);
-  fingerprint <<= 32;
-  fingerprint |=
-      digest[0] | (digest[1] << 8) | (digest[2] << 16) | (digest[3] << 24);
-
-  char emoji_fingerprint[128];
-  char* p = emoji_fingerprint;
-  int len = sizeof(emoji_fingerprint);
-  for (unsigned int i = 0; i < ARRAY_SIZE(alphabet); i++) {
-    unsigned int idx = fingerprint % alphabet_size[i];
-    fingerprint /= alphabet_size[i];
-
-    int n = snprintf(p, len, "%s", alphabet[i][idx]);
-    len -= n;
-    p += n;
-  }
-
-  NSString* res = [NSString stringWithUTF8String:emoji_fingerprint];
+  NSString* emoji = [Helpers passwordToEmoji:self.masterPassword.text];
   if (confirming_)
-    self.emojiConfirmationLabel.text = res;
+    self.emojiConfirmationLabel.text = emoji;
   else
-    self.emojiLabel.text = res;
+    self.emojiLabel.text = emoji;
 
-  [self computeHashEarly];
+  if (self.masterPassword.text.length != 0) [self computeHashEarly];
 }
 
 
@@ -228,36 +132,15 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   }
 
   baton_ |= 1;
-  dispatch_async(queue, ^{
-    scrypt_state_t state;
+  [Helpers passwordToAESKey:origin
+             withCompletion:^(NSData* key) {
+               baton_ ^= 1;
 
-    state.n = kDeriveScryptN;
-    state.r = kDeriveScryptR;
-    state.p = kDeriveScryptP;
+               masterAES_ = key;
+               masterAESOrigin_ = origin;
 
-    uint8_t aes_key[kApplicationDataKeySize];
-    int err;
-
-    err = scrypt_state_init(&state);
-    assert(err == 0);
-
-    scrypt(&state, (const uint8_t*)origin.UTF8String, origin.length,
-           (const uint8_t*)kScryptAES, sizeof(kScryptAES), aes_key,
-           sizeof(aes_key));
-    scrypt_state_destroy(&state);
-
-    __block NSData* out_data =
-        [NSData dataWithBytes:aes_key length:sizeof(aes_key)];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      baton_ ^= 1;
-
-      masterAES_ = out_data;
-      masterAESOrigin_ = origin;
-
-      if (completion != nil) completion(masterAES_);
-    });
-  });
+               if (completion != nil) completion(masterAES_);
+             }];
 }
 
 

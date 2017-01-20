@@ -49,7 +49,7 @@
       @"Tap application row\nto copy password",
       @"Passwords are computed\non the fly",
       @"No password is stored\nin the cloud",
-      @"We store just\napplication info\nand emojis"
+      @"We store just\nAES-256 encrypted\napplication info\nand emojis"
     ]
   };
   static NSString *kImages[] = {

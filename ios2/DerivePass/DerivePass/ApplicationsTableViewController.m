@@ -133,8 +133,8 @@
       [self.tableView cellForRowAtIndexPath:indexPath];
   Application* info = self.applications[indexPath.row];
   __block const char* master = self.masterPassword.UTF8String;
-  const char* domain = info.plaintextDomain.UTF8String;
-  const char* login = info.plaintextLogin.UTF8String;
+  __block const char* domain = info.plaintextDomain.UTF8String;
+  __block const char* login = info.plaintextLogin.UTF8String;
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
@@ -148,7 +148,7 @@
     scrypt_state_t state;
     __block char* out;
 
-    __block char tmp[1024];
+    char tmp[1024];
     if (info.plainRevision <= 1) {
       snprintf(tmp, sizeof(tmp), "%s/%s", domain, login);
     } else {

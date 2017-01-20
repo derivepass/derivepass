@@ -205,9 +205,7 @@
 
         dispatch_async(dispatch_get_main_queue(), ^(void) {
           // Skip items that are the same
-          if ([r.modificationDate
-                  isEqualToDate:[obj valueForKey:@"changed_at"]])
-            return;
+          if ([r.modificationDate isEqualToDate:obj.changed_at]) return;
 
           // Copy these as they are, because they are encrypted
           r[@"domain"] = [obj valueForKey:@"domain"];
@@ -264,6 +262,8 @@
   object.plainRevision = 1;
   object.plaintextLogin = @"";
   object.plaintextDomain = @"";
+
+  object.changed_at = [NSDate date];
 }
 
 

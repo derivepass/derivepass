@@ -182,7 +182,7 @@
   } else if ([[segue identifier] isEqualToString:@"ToAddApplication"]) {
     c.title = @"Add";
     c.info = nil;
-    c.insertIndex = (int32_t) self.applications.count;
+    c.insertIndex = (int32_t)self.applications.count;
   }
 }
 

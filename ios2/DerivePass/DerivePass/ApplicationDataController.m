@@ -9,10 +9,9 @@
 //
 
 #import "ApplicationDataController.h"
+#import "ApplicationDataController+Cryptor.h"
 
 #import <CloudKit/CloudKit.h>
-#import <CommonCrypto/CommonCryptor.h>
-#import <Security/SecRandom.h>
 
 #include <dispatch/dispatch.h>
 
@@ -265,108 +264,6 @@
 }
 
 
-- (uint8_t)hexDigit:(char)digit {
-  if ('0' <= digit && digit <= '9')
-    return digit - '0';
-  else if ('a' <= digit && digit <= 'f')
-    return (digit - 'a') + 0xa;
-  else if ('A' <= digit && digit <= 'F')
-    return (digit - 'A') + 0xa;
-  else
-    NSAssert(NO, @"Invalid HEX digit");
-  return 0;
-}
-
-
-- (NSData*)fromHex:(NSString*)str {
-  const char* bytes = str.UTF8String;
-  int len = (int)str.length;
-  NSAssert(len % 2 == 0, @"Invalid HEX string");
-
-  NSMutableData* res = [NSMutableData dataWithLength:len / 2];
-  uint8_t* o = (uint8_t*)res.mutableBytes;
-  for (int i = 0; i < len; i += 2) {
-    char h = bytes[i];
-    char l = bytes[i + 1];
-
-    o[i / 2] = ([self hexDigit:h] << 4) | [self hexDigit:l];
-  }
-  return res;
-}
-
-
-- (NSString*)toHex:(NSData*)data {
-  NSMutableString* res = [NSMutableString stringWithCapacity:data.length * 2];
-
-  const uint8_t* bytes = (const uint8_t*)data.bytes;
-  for (int i = 0; i < (int)data.length; i++) {
-    [res appendFormat:@"%02x", bytes[i]];
-  }
-
-  return res;
-}
-
-
-- (NSString*)encrypt:(NSString*)str {
-  NSAssert(self.AESKey.length == kApplicationDataKeySize,
-           @"Invalid AES key length");
-
-  NSMutableData* res =
-      [NSMutableData dataWithLength:kCCBlockSizeAES128 * 2 + str.length];
-  NSAssert(res != nil, @"Failed to allocated mutable output for encrypt");
-
-  // Set IV
-  int err = SecRandomCopyBytes(kSecRandomDefault, kCCBlockSizeAES128,
-                               res.mutableBytes);
-  NSAssert(err == 0, @"SecRandomCopyBytes failure");
-
-  size_t bytes;
-  CCCryptorStatus st;
-  st = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-               self.AESKey.bytes, self.AESKey.length, res.bytes,
-               (void*)str.UTF8String, str.length,
-               res.mutableBytes + kCCBlockSizeAES128,
-               res.length - kCCBlockSizeAES128, &bytes);
-  NSAssert(st == kCCSuccess, @"CCCrypt encrypt failure");
-
-  res.length = kCCBlockSizeAES128 + bytes;
-
-  return [self toHex:res];
-}
-
-
-- (NSString*)decrypt:(NSString*)str {
-  NSAssert(self.AESKey.length == kApplicationDataKeySize,
-           @"Invalid AES key length");
-
-  NSData* data = [self fromHex:str];
-  NSAssert(data.length > kCCBlockSizeAES128, @"Invalid encrypted data length");
-
-  NSMutableData* res = [NSMutableData dataWithLength:data.length];
-  NSAssert(res != nil, @"Failed to allocated mutable output for decrypt");
-
-  size_t bytes;
-  CCCryptorStatus err;
-  err = CCCrypt(
-      kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding, self.AESKey.bytes,
-      self.AESKey.length, data.bytes, data.bytes + kCCBlockSizeAES128,
-      data.length - kCCBlockSizeAES128, res.mutableBytes, res.length, &bytes);
-  NSAssert(err == kCCSuccess, @"CCCrypt decrypt failure");
-
-  return [NSString stringWithFormat:@"%.*s", (int)bytes, res.bytes];
-}
-
-
-- (NSString*)encryptNumber:(int32_t)num {
-  return [self encrypt:[NSString stringWithFormat:@"%d", num]];
-}
-
-
-- (int32_t)decryptNumber:(NSString*)str {
-  return atoi([self decrypt:str].UTF8String);
-}
-
-
 - (void)save {
   [self sort];
   for (Application* obj in self.internalList) {
@@ -394,6 +291,26 @@
   [self.managedObjectContext save:&err];
   NSAssert(err == nil, @"Failed to save CoreData: %@\n%@",
            [err localizedDescription], [err userInfo]);
+}
+
+
+- (NSString*)encrypt:(NSString*)str {
+  return [self _encrypt:str];
+}
+
+
+- (NSString*)decrypt:(NSString*)str {
+  return [self _decrypt:str];
+}
+
+
+- (int32_t)decryptNumber:(NSString*)str {
+  return [self _decryptNumber:str];
+}
+
+
+- (NSString*)encryptNumber:(int32_t)num {
+  return [self _encryptNumber:num];
 }
 
 @end

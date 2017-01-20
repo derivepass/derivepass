@@ -147,7 +147,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DW8-JK-ySI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <barButtonItem title="Add" id="fdn-9f-QBf">
                     <connections>
-                        <action selector="onAdd:" destination="cCH-5t-r8D" id="mJP-rw-vaL"/>
+                        <segue destination="I3c-Bz-h9E" kind="show" identifier="ToAddApplication" id="HiL-9U-FlM"/>
                     </connections>
                 </barButtonItem>
             </objects>
@@ -245,17 +245,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="gmail.com" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qGP-LD-J1s">
-                                                    <rect key="frame" x="153.5" y="4" width="252.5" height="46"/>
+                                                    <rect key="frame" x="153.5" y="3" width="252" height="46"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL"/>
                                                     <connections>
-                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="QMY-yS-IXw"/>
+                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="aO4-EI-u52"/>
                                                     </connections>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Domain" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGZ-tI-l0G">
-                                                    <rect key="frame" x="8" y="6.5" width="105" height="43.5"/>
+                                                    <rect key="frame" x="8" y="5.5" width="105" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
@@ -272,17 +272,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="my username" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T1F-KP-1qB">
-                                                    <rect key="frame" x="153.5" y="6.5" width="252.5" height="42.5"/>
+                                                    <rect key="frame" x="153.5" y="6" width="252" height="42"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                                                     <connections>
-                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="vpg-qd-gkN"/>
+                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="Q1G-Ud-N2C"/>
                                                     </connections>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Login" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvn-Rh-081">
-                                                    <rect key="frame" x="8" y="6.5" width="105" height="42.5"/>
+                                                    <rect key="frame" x="8" y="6" width="105" height="42"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
@@ -299,17 +299,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="d3d-wj-m1c">
-                                                    <rect key="frame" x="153.5" y="7" width="252.5" height="42.5"/>
+                                                    <rect key="frame" x="153.5" y="6" width="252" height="42.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="decimalPad"/>
                                                     <connections>
-                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="vAm-g1-0dl"/>
+                                                        <action selector="onFieldEdit:" destination="I3c-Bz-h9E" eventType="editingChanged" id="KBl-70-XRc"/>
                                                     </connections>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Revision" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxn-qO-2ZV">
-                                                    <rect key="frame" x="8" y="7" width="105" height="42.5"/>
+                                                    <rect key="frame" x="8" y="6" width="105" height="42.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
@@ -365,4 +365,7 @@
             <point key="canvasLocation" x="-250.40000000000001" y="261.31934032983509"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="HiL-9U-FlM"/>
+    </inferredMetricsTieBreakers>
 </document>

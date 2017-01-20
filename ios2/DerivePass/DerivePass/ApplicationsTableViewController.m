@@ -38,6 +38,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+
+  // We may came here from the "Add" screen
+  // reload apps in this case
+  [self onDataUpdate];
+
   [self.tableView reloadData];
   [self.navigationController setNavigationBarHidden:NO];
 }
@@ -164,32 +169,19 @@
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender {
-  if ([[segue identifier] isEqualToString:@"ToEditApplication"]) {
-    EditApplicationTableViewController* c = [segue destinationViewController];
+  EditApplicationTableViewController* c = [segue destinationViewController];
+  c.dataController = self.dataController;
 
+  if ([[segue identifier] isEqualToString:@"ToEditApplication"]) {
     UITableViewCell* cell = sender;
     NSInteger row = [self.tableView indexPathForCell:cell].row;
 
     c.title = @"Edit";
     c.info = self.applications[row];
-    c.dataController = self.dataController;
+  } else if ([[segue identifier] isEqualToString:@"ToAddApplication"]) {
+    c.title = @"Add";
+    c.info = nil;
   }
-}
-
-
-- (IBAction)onAdd:(id)sender {
-  Application* info = [self.dataController allocApplication];
-
-  info.plaintextDomain = @"gmail.com";
-  info.plaintextLogin = @"my username";
-  info.plainRevision = 1;
-  info.index = (int)self.applications.count;
-
-  [self.applications insertObject:info atIndex:self.applications.count];
-  [self.dataController pushApplication:info];
-  [self.dataController save];
-
-  [self.tableView reloadData];
 }
 
 @end

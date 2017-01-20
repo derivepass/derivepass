@@ -12,10 +12,10 @@
 
 @interface EditApplicationTableViewController ()
 
-@property(weak, nonatomic) IBOutlet UIBarButtonItem *saveButtonItem;
-@property(weak, nonatomic) IBOutlet UITextField *domainField;
-@property(weak, nonatomic) IBOutlet UITextField *loginField;
-@property(weak, nonatomic) IBOutlet UITextField *revisionField;
+@property(weak, nonatomic) IBOutlet UIBarButtonItem* saveButtonItem;
+@property(weak, nonatomic) IBOutlet UITextField* domainField;
+@property(weak, nonatomic) IBOutlet UITextField* loginField;
+@property(weak, nonatomic) IBOutlet UITextField* revisionField;
 
 @end
 
@@ -29,6 +29,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+
+  // "Add" screen
+  if (self.info == nil) return;
+
   self.domainField.text = self.info.plaintextDomain;
   self.loginField.text = self.info.plaintextLogin;
   self.revisionField.text =
@@ -42,49 +46,60 @@
 
 // TODO(indutny): move to data controller
 - (IBAction)onSave:(id)sender {
-  self.info.plaintextDomain = self.domainField.text;
-  self.info.plaintextLogin = self.loginField.text;
+  BOOL valid = YES;
 
-  int rev = atoi([self.revisionField.text UTF8String]);
-  self.info.plainRevision = rev;
+  UITextField* fields[] = {self.domainField, self.loginField,
+                           self.revisionField};
+  BOOL (^verifiers[])
+  (NSString*) = {^BOOL(NSString* v){
+      return v.length != 0;
+}
+,
+    ^BOOL(NSString* v) {
+      return v.length != 0;
+    },
+    ^BOOL(NSString* v) {
+      return v.length != 0 && atoi(v.UTF8String) >= 1;
+    }
+}
+;
 
-  self.info.changed_at = [NSDate date];
-  [self.dataController save];
+for (int i = 0; i < 3; i++) {
+  UITextField* field = fields[i];
 
-  [self.navigationController popViewControllerAnimated:YES];
+  field.layer.borderWidth = 0.0;
+
+  if (verifiers[i](field.text)) continue;
+
+  valid = NO;
+  field.layer.borderColor = [[UIColor redColor] CGColor];
+  field.layer.borderWidth = 1.0;
+}
+
+if (!valid) return;
+
+if (self.info == nil) {
+  self.info = [self.dataController allocApplication];
+  [self.dataController pushApplication:self.info];
+}
+
+self.info.plaintextDomain = self.domainField.text;
+self.info.plaintextLogin = self.loginField.text;
+
+int rev = atoi([self.revisionField.text UTF8String]);
+self.info.plainRevision = rev;
+
+self.info.changed_at = [NSDate date];
+[self.dataController save];
+
+[self.navigationController popViewControllerAnimated:YES];
 }
 
 
 - (IBAction)onFieldEdit:(id)sender {
-  BOOL valid = YES;
+  UITextField* field = sender;
 
-  self.domainField.layer.borderWidth = 0.0;
-  self.loginField.layer.borderWidth = 0.0;
-  self.revisionField.layer.borderWidth = 0.0;
-
-  if (self.domainField.text.length == 0) {
-    valid = NO;
-
-    self.domainField.layer.borderColor = [[UIColor redColor] CGColor];
-    self.domainField.layer.borderWidth = 1.0;
-  }
-
-  if (self.loginField.text.length == 0) {
-    valid = NO;
-
-    self.loginField.layer.borderColor = [[UIColor redColor] CGColor];
-    self.loginField.layer.borderWidth = 1.0;
-  }
-
-  if (self.revisionField.text.length == 0 ||
-      atoi(self.revisionField.text.UTF8String) < 1) {
-    valid = NO;
-
-    self.revisionField.layer.borderColor = [[UIColor redColor] CGColor];
-    self.revisionField.layer.borderWidth = 1.0;
-  }
-
-  self.saveButtonItem.enabled = valid;
+  field.layer.borderWidth = 0.0;
 }
 
 @end

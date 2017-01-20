@@ -178,9 +178,11 @@
 
     c.title = @"Edit";
     c.info = self.applications[row];
+    c.insertIndex = 0;
   } else if ([[segue identifier] isEqualToString:@"ToAddApplication"]) {
     c.title = @"Add";
     c.info = nil;
+    c.insertIndex = (int32_t) self.applications.count;
   }
 }
 

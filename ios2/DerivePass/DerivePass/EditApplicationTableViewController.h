@@ -13,9 +13,12 @@
 
 #import "ApplicationDataController.h"
 
+#include <stdint.h>
+
 @interface EditApplicationTableViewController : UITableViewController
 
 @property Application* info;
+@property int32_t insertIndex;
 @property ApplicationDataController* dataController;
 
 @end

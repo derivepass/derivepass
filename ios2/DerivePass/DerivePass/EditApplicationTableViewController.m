@@ -44,55 +44,53 @@
 }
 
 
+static BOOL check_non_empty(NSString* v) { return v.length != 0; }
+
+
+static BOOL check_is_number(NSString* v) {
+  return v.length != 0 && atoi(v.UTF8String) >= 1;
+}
+
+
 // TODO(indutny): move to data controller
 - (IBAction)onSave:(id)sender {
   BOOL valid = YES;
 
   UITextField* fields[] = {self.domainField, self.loginField,
                            self.revisionField};
-  BOOL (^verifiers[])
-  (NSString*) = {^BOOL(NSString* v){
-      return v.length != 0;
-}
-,
-    ^BOOL(NSString* v) {
-      return v.length != 0;
-    },
-    ^BOOL(NSString* v) {
-      return v.length != 0 && atoi(v.UTF8String) >= 1;
-    }
-}
-;
+  BOOL(*verifiers[])
+  (NSString*) = {check_non_empty, check_non_empty, check_is_number};
 
-for (int i = 0; i < 3; i++) {
-  UITextField* field = fields[i];
+  for (int i = 0; i < 3; i++) {
+    UITextField* field = fields[i];
 
-  field.layer.borderWidth = 0.0;
+    field.layer.borderWidth = 0.0;
 
-  if (verifiers[i](field.text)) continue;
+    if (verifiers[i](field.text)) continue;
 
-  valid = NO;
-  field.layer.borderColor = [[UIColor redColor] CGColor];
-  field.layer.borderWidth = 1.0;
-}
+    valid = NO;
+    field.layer.borderColor = [[UIColor redColor] CGColor];
+    field.layer.borderWidth = 1.0;
+  }
 
-if (!valid) return;
+  if (!valid) return;
 
-if (self.info == nil) {
-  self.info = [self.dataController allocApplication];
-  [self.dataController pushApplication:self.info];
-}
+  if (self.info == nil) {
+    self.info = [self.dataController allocApplication];
+    self.info.index = self.insertIndex;
+    [self.dataController pushApplication:self.info];
+  }
 
-self.info.plaintextDomain = self.domainField.text;
-self.info.plaintextLogin = self.loginField.text;
+  self.info.plaintextDomain = self.domainField.text;
+  self.info.plaintextLogin = self.loginField.text;
 
-int rev = atoi([self.revisionField.text UTF8String]);
-self.info.plainRevision = rev;
+  int rev = atoi([self.revisionField.text UTF8String]);
+  self.info.plainRevision = rev;
 
-self.info.changed_at = [NSDate date];
-[self.dataController save];
+  self.info.changed_at = [NSDate date];
+  [self.dataController save];
 
-[self.navigationController popViewControllerAnimated:YES];
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 

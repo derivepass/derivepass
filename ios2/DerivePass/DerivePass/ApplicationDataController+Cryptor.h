@@ -10,6 +10,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ApplicationDataController.h"
+
 @interface ApplicationDataController (Cryptor)
 
 - (NSString*)_encrypt:(NSString*)str;

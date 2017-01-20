@@ -9,7 +9,6 @@
 //
 
 #import "ApplicationDataController+Cryptor.h"
-#import "ApplicationDataController.h"
 
 static NSString* kDecryptFailureString = @"<decrypt failure>";
 

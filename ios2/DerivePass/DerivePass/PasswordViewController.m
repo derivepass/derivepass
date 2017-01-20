@@ -198,7 +198,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
           [effectView removeFromSuperview];
         }];
 
-    self.dataController.AESKey = key;
+    self.dataController.cryptor.AESKey = key;
 
     [self performSegueWithIdentifier:@"ToApplications" sender:self];
   }];

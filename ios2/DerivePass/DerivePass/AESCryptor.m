@@ -8,11 +8,11 @@
 //  Copyright © 2017 Indutny Inc. All rights reserved.
 //
 
-#import "ApplicationDataController+Cryptor.h"
+#import "AESCryptor.h"
 
 static NSString* kDecryptFailureString = @"<decrypt failure>";
 
-@implementation ApplicationDataController (Cryptor)
+@implementation AESCryptor
 
 - (uint8_t)hexDigit:(char)digit withError:(BOOL*)err {
   if ('0' <= digit && digit <= '9')
@@ -65,9 +65,8 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
-- (NSString*)_encrypt:(NSString*)str {
-  NSAssert(self.AESKey.length == kApplicationDataKeySize,
-           @"Invalid AES key length");
+- (NSString*)encrypt:(NSString*)str {
+  NSAssert(self.AESKey.length == kCryptorKeySize, @"Invalid AES key length");
 
   NSMutableData* res =
       [NSMutableData dataWithLength:kCCBlockSizeAES128 * 2 + str.length];
@@ -93,9 +92,8 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
-- (NSString*)_decrypt:(NSString*)str {
-  NSAssert(self.AESKey.length == kApplicationDataKeySize,
-           @"Invalid AES key length");
+- (NSString*)decrypt:(NSString*)str {
+  NSAssert(self.AESKey.length == kCryptorKeySize, @"Invalid AES key length");
 
   NSData* data = [self fromHex:str];
   if (data == nil) return kDecryptFailureString;
@@ -122,13 +120,13 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
-- (NSString*)_encryptNumber:(int32_t)num {
-  return [self _encrypt:[NSString stringWithFormat:@"%d", num]];
+- (NSString*)encryptNumber:(int32_t)num {
+  return [self encrypt:[NSString stringWithFormat:@"%d", num]];
 }
 
 
-- (int32_t)_decryptNumber:(NSString*)str {
-  NSString* res = [self _decrypt:str];
+- (int32_t)decryptNumber:(NSString*)str {
+  NSString* res = [self decrypt:str];
   if (res == kDecryptFailureString) return 1;
   return atoi(res.UTF8String);
 }

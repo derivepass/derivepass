@@ -11,17 +11,10 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
+#import "AESCryptor.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ApplicationCryptor
-
-- (NSString*)encrypt:(NSString*)str;
-- (NSString*)decrypt:(NSString*)str;
-
-- (NSString*)encryptNumber:(int32_t)num;
-- (int32_t)decryptNumber:(NSString*)str;
-
-@end
 
 @interface Application : NSManagedObject {
   // TODO(indutny): these should be private!
@@ -34,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
   int32_t revisionClear;
 }
 
-@property(weak) id<ApplicationCryptor> cryptor;
+@property(strong) AESCryptor* cryptor;
 
 @end
 

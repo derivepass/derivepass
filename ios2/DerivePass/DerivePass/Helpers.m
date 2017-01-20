@@ -3,11 +3,13 @@
 //  DerivePass
 //
 //  Created by Indutnyy, Fedor on 1/20/17.
+//
+//  This software is licensed under the MIT License.
 //  Copyright © 2017 Indutny Inc. All rights reserved.
 //
 
 #import "Helpers.h"
-#import "ApplicationDataController.h"
+#import "AESCryptor.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #import <dispatch/dispatch.h>  // dispatch_queue_t
@@ -123,7 +125,7 @@ static const char* kScryptAES = "derivepass/aes";
     state.r = kDeriveScryptR;
     state.p = kDeriveScryptP;
 
-    uint8_t aes_key[kApplicationDataKeySize];
+    uint8_t aes_key[kCryptorKeySize];
     int err;
 
     err = scrypt_state_init(&state);

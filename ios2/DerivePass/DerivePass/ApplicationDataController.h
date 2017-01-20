@@ -8,13 +8,10 @@
 //  Copyright © 2017 Indutny Inc. All rights reserved.
 //
 
-#import <CommonCrypto/CommonCryptor.h>
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
 #import "Application+CoreDataProperties.h"
-
-static int kApplicationDataKeySize = kCCKeySizeAES256;
 
 @protocol ApplicationDataControllerDelegate
 
@@ -26,7 +23,7 @@ static int kApplicationDataKeySize = kCCKeySizeAES256;
 
 @property(weak) id<ApplicationDataControllerDelegate> delegate;
 @property(strong) NSString* masterHash;
-@property(strong) NSData* AESKey;
+@property(strong) AESCryptor* cryptor;
 
 - (ApplicationDataController*)init;
 

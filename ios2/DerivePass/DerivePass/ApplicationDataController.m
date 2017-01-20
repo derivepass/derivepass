@@ -9,13 +9,13 @@
 //
 
 #import "ApplicationDataController.h"
-#import "ApplicationDataController+Cryptor.h"
+#import "AESCryptor.h"
 
 #import <CloudKit/CloudKit.h>
 
 #include <dispatch/dispatch.h>
 
-@interface ApplicationDataController ()<ApplicationCryptor>
+@interface ApplicationDataController ()
 
 @property(strong) NSManagedObjectContext* managedObjectContext;
 @property(strong) CKDatabase* db;
@@ -33,6 +33,9 @@
 - (ApplicationDataController*)init {
   self = [super init];
   if (!self) return nil;
+
+  // NOTE: cryptor MUST be initialzied before CoreData
+  self.cryptor = [[AESCryptor alloc] init];
 
   [self initCoreData];
   [self initCloudKit];
@@ -80,7 +83,7 @@
            [err localizedDescription], [err userInfo]);
 
   self.internalList = [NSMutableArray arrayWithArray:res];
-  for (Application* app in self.internalList) app.cryptor = self;
+  for (Application* app in self.internalList) app.cryptor = self.cryptor;
 }
 
 
@@ -244,7 +247,7 @@
   res.uuid = [[NSUUID UUID] UUIDString];
   res.changed_at = [NSDate date];
   res.master = self.masterHash;
-  res.cryptor = self;
+  res.cryptor = self.cryptor;
   return res;
 }
 
@@ -291,26 +294,6 @@
   [self.managedObjectContext save:&err];
   NSAssert(err == nil, @"Failed to save CoreData: %@\n%@",
            [err localizedDescription], [err userInfo]);
-}
-
-
-- (NSString*)encrypt:(NSString*)str {
-  return [self _encrypt:str];
-}
-
-
-- (NSString*)decrypt:(NSString*)str {
-  return [self _decrypt:str];
-}
-
-
-- (int32_t)decryptNumber:(NSString*)str {
-  return [self _decryptNumber:str];
-}
-
-
-- (NSString*)encryptNumber:(int32_t)num {
-  return [self _encryptNumber:num];
 }
 
 @end

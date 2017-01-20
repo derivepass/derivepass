@@ -143,4 +143,46 @@ static const char* kScryptAES = "derivepass/aes";
   });
 }
 
+
++ (void)passwordFromMaster:(NSString*)master
+                    domain:(NSString*)domain
+                     login:(NSString*)login
+               andRevision:(int32_t)revision
+            withCompletion:(void (^)(NSString*))completion {
+  __block NSString* masterCopy = master;
+  __block NSString* domainCopy = domain;
+  __block NSString* loginCopy = login;
+
+  dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+  dispatch_async(queue, ^{
+    scrypt_state_t state;
+    __block char* out;
+
+    char tmp[1024];
+    if (revision <= 1) {
+      snprintf(tmp, sizeof(tmp), "%s/%s", domainCopy.UTF8String,
+               loginCopy.UTF8String);
+    } else {
+      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domainCopy.UTF8String,
+               loginCopy.UTF8String, revision);
+    }
+
+    state.n = kDeriveScryptN;
+    state.r = kDeriveScryptR;
+    state.p = kDeriveScryptP;
+
+    out = derive(&state, masterCopy.UTF8String, tmp);
+    NSAssert(out != NULL, @"Failed to derive");
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      NSString* res = [NSString stringWithUTF8String:out];
+      free(out);
+
+      completion(res);
+    });
+  });
+}
+
 @end

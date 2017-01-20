@@ -11,12 +11,10 @@
 #import "ApplicationsTableViewController.h"
 #import "ApplicationTableViewCell.h"
 #import "EditApplicationTableViewController.h"
+#import "Helpers.h"
 
 #import <MobileCoreServices/UTCoreTypes.h>
-
 #import <dispatch/dispatch.h>  // dispatch_queue_t
-
-#include "src/common.h"
 
 @interface ApplicationsTableViewController ()
 
@@ -132,69 +130,34 @@
   ApplicationTableViewCell* cell =
       [self.tableView cellForRowAtIndexPath:indexPath];
   Application* info = self.applications[indexPath.row];
-  __block const char* master = self.masterPassword.UTF8String;
-  __block const char* domain = info.plaintextDomain.UTF8String;
-  __block const char* login = info.plaintextLogin.UTF8String;
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
   cell.activityIndicator.center =
       CGPointMake(cell.center.x, cell.contentView.center.y);
 
-  dispatch_queue_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+  [Helpers passwordFromMaster:self.masterPassword
+                       domain:info.plaintextDomain
+                        login:info.plaintextLogin
+                  andRevision:info.plainRevision
+               withCompletion:^(NSString* password) {
+                 UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
+                 pasteboard.string = password;
 
-  dispatch_async(queue, ^{
-    scrypt_state_t state;
-    __block char* out;
+                 [cell.activityIndicator stopAnimating];
+                 UIAlertController* alert = [UIAlertController
+                     alertControllerWithTitle:@""
+                                      message:@"Password copied to clipboard"
+                               preferredStyle:UIAlertControllerStyleAlert];
+                 [self presentViewController:alert animated:YES completion:nil];
 
-    char tmp[1024];
-    if (info.plainRevision <= 1) {
-      snprintf(tmp, sizeof(tmp), "%s/%s", domain, login);
-    } else {
-      snprintf(tmp, sizeof(tmp), "%s/%s#%d", domain, login, info.plainRevision);
-    }
-
-    state.n = kDeriveScryptN;
-    state.r = kDeriveScryptR;
-    state.p = kDeriveScryptP;
-
-    out = derive(&state, master, tmp);
-    NSAssert(out != NULL, @"Failed to derive");
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
-
-      // 5 minute expiration
-      NSDate* expire = [NSDate dateWithTimeIntervalSinceNow:5 * 60];
-
-      [pasteboard setItems:@[ @{
-                    (NSString*)
-                    kUTTypeUTF8PlainText : [NSString stringWithUTF8String:out]
-                  } ]
-                   options:@{
-                     UIPasteboardOptionLocalOnly : [NSNumber numberWithInt:0],
-                     UIPasteboardOptionExpirationDate : expire
-                   }];
-
-      pasteboard.string = [NSString stringWithUTF8String:out];
-
-      free(out);
-
-      [cell.activityIndicator stopAnimating];
-      UIAlertController* alert = [UIAlertController
-          alertControllerWithTitle:@""
-                           message:@"Password copied to clipboard"
-                    preferredStyle:UIAlertControllerStyleAlert];
-      [self presentViewController:alert animated:YES completion:nil];
-
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC),
+                 dispatch_after(
+                     dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC),
                      dispatch_get_main_queue(), ^(void) {
                        [alert dismissViewControllerAnimated:YES completion:nil];
                        [self.view setUserInteractionEnabled:YES];
                      });
-    });
-  });
+               }];
 }
 
 

@@ -22,7 +22,7 @@
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
-static const char* kScryptAES = "derivepass/aes";
+static const char kScryptAES[] = "derivepass/aes";
 
 @implementation Helpers
 

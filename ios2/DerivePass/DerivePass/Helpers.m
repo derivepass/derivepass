@@ -112,8 +112,8 @@ static const char kScryptAES[] = "derivepass/aes";
 }
 
 
-+ (void)passwordToAESKey:(NSString*)password
-          withCompletion:(void (^)(NSData*))completion {
++ (void)passwordToAESAndMACKey:(NSString*)password
+                withCompletion:(void (^)(NSData* aes, NSData* mac))completion {
   __block NSString* origin = password;
 
   dispatch_queue_t queue =
@@ -125,22 +125,24 @@ static const char kScryptAES[] = "derivepass/aes";
     state.r = kDeriveScryptR;
     state.p = kDeriveScryptP;
 
-    uint8_t aes_key[kCryptorKeySize];
+    uint8_t key_data[kCryptorKeySize + kCryptorMacKeySize];
     int err;
 
     err = scrypt_state_init(&state);
     assert(err == 0);
 
     scrypt(&state, (const uint8_t*)origin.UTF8String, origin.length,
-           (const uint8_t*)kScryptAES, sizeof(kScryptAES) - 1, aes_key,
-           sizeof(aes_key));
+           (const uint8_t*)kScryptAES, sizeof(kScryptAES) - 1, key_data,
+           sizeof(key_data));
     scrypt_state_destroy(&state);
 
-    __block NSData* out_data =
-        [NSData dataWithBytes:aes_key length:sizeof(aes_key)];
+    __block NSData* aes_key =
+        [NSData dataWithBytes:key_data length:kCryptorKeySize];
+    __block NSData* mac_key = [NSData dataWithBytes:key_data + kCryptorKeySize
+                                             length:kCryptorMacKeySize];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-      completion(out_data);
+      completion(aes_key, mac_key);
     });
   });
 }

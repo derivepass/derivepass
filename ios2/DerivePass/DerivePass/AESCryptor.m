@@ -10,7 +10,14 @@
 
 #import "AESCryptor.h"
 
+#import <CommonCrypto/CommonHMAC.h>
+
 static NSString* kDecryptFailureString = @"<decrypt failure>";
+static NSString* kAESCryptorV1Prefix = @"v1:";
+static unsigned int kAESIVSize = kCCBlockSizeAES128;
+static unsigned int kMACSize = CC_SHA256_DIGEST_LENGTH;
+
+typedef enum { kAESCryptorV0, kAESCryptorV1 } AESCryptorDataVersion;
 
 @implementation AESCryptor
 
@@ -26,7 +33,14 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
-- (NSData*)fromHex:(NSString*)str {
+- (NSData*)fromHex:(NSString*)str getVersion:(AESCryptorDataVersion*)version {
+  if ([str hasPrefix:kAESCryptorV1Prefix]) {
+    *version = kAESCryptorV1;
+    str = [str substringFromIndex:kAESCryptorV1Prefix.length];
+  } else {
+    *version = kAESCryptorV0;
+  }
+
   const char* bytes = str.UTF8String;
   int len = (int)str.length;
 
@@ -53,8 +67,10 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
-- (NSString*)toHex:(NSData*)data {
+- (NSString*)toHex:(NSData*)data withVersion:(AESCryptorDataVersion)version {
   NSMutableString* res = [NSMutableString stringWithCapacity:data.length * 2];
+
+  if (version == kAESCryptorV1) [res appendString:kAESCryptorV1Prefix];
 
   const uint8_t* bytes = (const uint8_t*)data.bytes;
   for (int i = 0; i < (int)data.length; i++) {
@@ -65,38 +81,77 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
 }
 
 
+- (void)hmac:(NSData*)data
+        withLength:(NSUInteger)len
+    andDestination:(void*)res {
+  CCHmac(kCCHmacAlgSHA256, self.MACKey.bytes, self.MACKey.length, data.bytes,
+         len, res);
+}
+
+
 - (NSString*)encrypt:(NSString*)str {
   NSAssert(self.AESKey.length == kCryptorKeySize, @"Invalid AES key length");
 
-  NSMutableData* res =
-      [NSMutableData dataWithLength:kCCBlockSizeAES128 * 2 + str.length];
+  // [iv] [string] [some possible alignment and padding] [digest]
+  NSMutableData* res = [NSMutableData
+      dataWithLength:kAESIVSize + str.length + kCCBlockSizeAES128 + kMACSize];
   NSAssert(res != nil, @"Failed to allocated mutable output for encrypt");
 
+  void* iv = res.mutableBytes;
+  void* content = res.mutableBytes + kAESIVSize;
+  NSUInteger content_len = res.length - kAESIVSize - kMACSize;
+
   // Set IV
-  int err = SecRandomCopyBytes(kSecRandomDefault, kCCBlockSizeAES128,
-                               res.mutableBytes);
+  int err = SecRandomCopyBytes(kSecRandomDefault, kAESIVSize, iv);
   NSAssert(err == 0, @"SecRandomCopyBytes failure");
 
   size_t bytes;
   CCCryptorStatus st;
   st = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-               self.AESKey.bytes, self.AESKey.length, res.bytes,
-               (void*)str.UTF8String, str.length,
-               res.mutableBytes + kCCBlockSizeAES128,
-               res.length - kCCBlockSizeAES128, &bytes);
+               self.AESKey.bytes, self.AESKey.length, iv, (void*)str.UTF8String,
+               str.length, content, content_len, &bytes);
   NSAssert(st == kCCSuccess, @"CCCrypt encrypt failure");
 
-  res.length = kCCBlockSizeAES128 + bytes;
+  // Encrypt-then-MAC
+  void* digest = res.mutableBytes + kAESIVSize + bytes;
+  [self hmac:res withLength:kAESIVSize + bytes andDestination:digest];
+  res.length = kCCBlockSizeAES128 + bytes + kMACSize;
 
-  return [self toHex:res];
+  return [self toHex:res withVersion:kAESCryptorV1];
 }
 
 
 - (NSString*)decrypt:(NSString*)str {
   NSAssert(self.AESKey.length == kCryptorKeySize, @"Invalid AES key length");
 
-  NSData* data = [self fromHex:str];
+  AESCryptorDataVersion version;
+  NSData* data = [self fromHex:str getVersion:&version];
   if (data == nil) return kDecryptFailureString;
+
+  // Check MAC in v1
+  if (version == kAESCryptorV1) {
+    if (data.length <= kMACSize) {
+      NSLog(@"No data, but just digest in encrypted string");
+      return kDecryptFailureString;
+    }
+
+    NSData* head =
+        [data subdataWithRange:NSMakeRange(0, data.length - kMACSize)];
+    NSData* digest = [data
+        subdataWithRange:NSMakeRange(head.length, data.length - head.length)];
+    data = head;
+
+    NSMutableData* actualDigest = [NSMutableData dataWithLength:kMACSize];
+
+    [self hmac:data
+            withLength:data.length
+        andDestination:actualDigest.mutableBytes];
+    if (digest != nil && ![actualDigest isEqualToData:digest]) {
+      NSLog(@"Failed to decrypt data, digest mismatch");
+      return kDecryptFailureString;
+    }
+  }
+
   if (data.length <= kCCBlockSizeAES128) {
     NSLog(@"No data, but just IV in encrypted string");
     return kDecryptFailureString;
@@ -105,12 +160,15 @@ static NSString* kDecryptFailureString = @"<decrypt failure>";
   NSMutableData* res = [NSMutableData dataWithLength:data.length];
   NSAssert(res != nil, @"Failed to allocated mutable output for decrypt");
 
+  const void* iv = data.bytes;
+  const void* content = data.bytes + kAESIVSize;
+  NSUInteger content_len = data.length - kAESIVSize;
+
   size_t bytes;
   CCCryptorStatus err;
-  err = CCCrypt(
-      kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding, self.AESKey.bytes,
-      self.AESKey.length, data.bytes, data.bytes + kCCBlockSizeAES128,
-      data.length - kCCBlockSizeAES128, res.mutableBytes, res.length, &bytes);
+  err = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
+                self.AESKey.bytes, self.AESKey.length, iv, content, content_len,
+                res.mutableBytes, res.length, &bytes);
   if (err != kCCSuccess) {
     NSLog(@"Failed to decrypt data, err=%d", err);
     return kDecryptFailureString;

@@ -17,8 +17,8 @@ static NSString* const kDefaultEmoji = @"😬";
 @interface Helpers : NSObject
 
 + (NSString*)passwordToEmoji:(NSString*)password;
-+ (void)passwordToAESKey:(NSString*)password
-          withCompletion:(void (^)(NSData*))completion;
++ (void)passwordToAESAndMACKey:(NSString*)password
+                withCompletion:(void (^)(NSData* aes, NSData* mac))completion;
 + (void)passwordFromMaster:(NSString*)master
                     domain:(NSString*)domain
                      login:(NSString*)login

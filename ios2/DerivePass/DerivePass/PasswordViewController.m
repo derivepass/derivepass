@@ -34,6 +34,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   NSString* confirming_;
   NSString* masterAESOrigin_;
   NSData* masterAES_;
+  NSData* masterMAC_;
   uint64_t baton_;
 }
 
@@ -109,7 +110,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 }
 
 
-- (void)computeAESKey:(void (^)(NSData*))completion {
+- (void)computeAESKey:(void (^)(NSData* aes, NSData* mac))completion {
   dispatch_queue_t queue =
       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
@@ -117,7 +118,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
   // Cached already
   if (masterAESOrigin_ == origin) {
-    if (completion != nil) completion(masterAES_);
+    if (completion != nil) completion(masterAES_, masterMAC_);
     return;
   }
 
@@ -132,15 +133,16 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   }
 
   baton_ |= 1;
-  [Helpers passwordToAESKey:origin
-             withCompletion:^(NSData* key) {
-               baton_ ^= 1;
+  [Helpers passwordToAESAndMACKey:origin
+                   withCompletion:^(NSData* aes, NSData* mac) {
+                     baton_ ^= 1;
 
-               masterAES_ = key;
-               masterAESOrigin_ = origin;
+                     masterAES_ = aes;
+                     masterMAC_ = mac;
+                     masterAESOrigin_ = origin;
 
-               if (completion != nil) completion(masterAES_);
-             }];
+                     if (completion != nil) completion(aes, mac);
+                   }];
 }
 
 
@@ -187,7 +189,7 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   }
 
   self.view.userInteractionEnabled = NO;
-  [self computeAESKey:^(NSData* key) {
+  [self computeAESKey:^(NSData* aes, NSData* mac) {
     self.view.userInteractionEnabled = YES;
     [self.spinner stopAnimating];
     [UIView animateWithDuration:0.1
@@ -198,7 +200,8 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
           [effectView removeFromSuperview];
         }];
 
-    self.dataController.cryptor.AESKey = key;
+    self.dataController.cryptor.AESKey = aes;
+    self.dataController.cryptor.MACKey = mac;
 
     [self performSegueWithIdentifier:@"ToApplications" sender:self];
   }];

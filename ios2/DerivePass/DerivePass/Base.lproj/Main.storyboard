@@ -327,7 +327,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Save" id="aqx-Q9-Ms0">
+                        <barButtonItem systemItem="save" id="aqx-Q9-Ms0">
                             <connections>
                                 <action selector="onSave:" destination="I3c-Bz-h9E" id="CgH-vG-27L"/>
                             </connections>

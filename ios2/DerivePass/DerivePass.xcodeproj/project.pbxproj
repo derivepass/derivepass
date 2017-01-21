@@ -14,6 +14,10 @@
 		4D6349DB1E2D2E380051D4DF /* TutorialPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349DA1E2D2E380051D4DF /* TutorialPageViewController.m */; };
 		4D6349DE1E2D2E680051D4DF /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */; };
 		4D6349E11E2D45690051D4DF /* TutorialFinalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */; };
+		4D73B7CB1E33303000F3CF87 /* DerivePassUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D73B7CA1E33303000F3CF87 /* DerivePassUITests.m */; };
+		4D73B7D31E333DAF00F3CF87 /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F98051E29DAA40070B586 /* common.c */; };
+		4D73B7D41E333DAF00F3CF87 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F98071E29DAA40070B586 /* util.c */; };
+		4D73B7D91E333E3100F3CF87 /* scrypt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D8F98031E29DA780070B586 /* scrypt.framework */; };
 		4D8F97E81E29D9FF0070B586 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97E71E29D9FF0070B586 /* main.m */; };
 		4D8F97EB1E29D9FF0070B586 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97EA1E29D9FF0070B586 /* AppDelegate.m */; };
 		4D8F97EE1E29D9FF0070B586 /* PasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8F97ED1E29D9FF0070B586 /* PasswordViewController.m */; };
@@ -41,6 +45,13 @@
 			remoteGlobalIDString = 4D8F97E21E29D9FF0070B586;
 			remoteInfo = DerivePass;
 		};
+		4D73B7CD1E33303000F3CF87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D8F97DB1E29D9FF0070B586 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D8F97E21E29D9FF0070B586;
+			remoteInfo = DerivePass;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +69,9 @@
 		4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialViewController.m; sourceTree = "<group>"; };
 		4D6349DF1E2D45690051D4DF /* TutorialFinalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialFinalViewController.h; sourceTree = "<group>"; };
 		4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialFinalViewController.m; sourceTree = "<group>"; };
+		4D73B7C81E33303000F3CF87 /* DerivePassUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DerivePassUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D73B7CA1E33303000F3CF87 /* DerivePassUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DerivePassUITests.m; sourceTree = "<group>"; };
+		4D73B7CC1E33303000F3CF87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D8F97E31E29D9FF0070B586 /* DerivePass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DerivePass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D8F97E71E29D9FF0070B586 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4D8F97E91E29D9FF0070B586 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -99,6 +113,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4D73B7C51E33303000F3CF87 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D73B7D91E333E3100F3CF87 /* scrypt.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4D8F97E01E29D9FF0070B586 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -120,11 +142,21 @@
 			path = DerivePassTests;
 			sourceTree = "<group>";
 		};
+		4D73B7C91E33303000F3CF87 /* DerivePassUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4D73B7CA1E33303000F3CF87 /* DerivePassUITests.m */,
+				4D73B7CC1E33303000F3CF87 /* Info.plist */,
+			);
+			path = DerivePassUITests;
+			sourceTree = "<group>";
+		};
 		4D8F97DA1E29D9FF0070B586 = {
 			isa = PBXGroup;
 			children = (
 				4D8F97E51E29D9FF0070B586 /* DerivePass */,
 				4D3F053A1E3274E200CA1C2A /* DerivePassTests */,
+				4D73B7C91E33303000F3CF87 /* DerivePassUITests */,
 				4D8F97E41E29D9FF0070B586 /* Products */,
 				4D8F98001E29DA5D0070B586 /* Frameworks */,
 			);
@@ -138,6 +170,7 @@
 			children = (
 				4D8F97E31E29D9FF0070B586 /* DerivePass.app */,
 				4D3F05391E3274E200CA1C2A /* DerivePassTests.xctest */,
+				4D73B7C81E33303000F3CF87 /* DerivePassUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -234,6 +267,24 @@
 			productReference = 4D3F05391E3274E200CA1C2A /* DerivePassTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		4D73B7C71E33303000F3CF87 /* DerivePassUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D73B7D11E33303000F3CF87 /* Build configuration list for PBXNativeTarget "DerivePassUITests" */;
+			buildPhases = (
+				4D73B7C41E33303000F3CF87 /* Sources */,
+				4D73B7C51E33303000F3CF87 /* Frameworks */,
+				4D73B7C61E33303000F3CF87 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D73B7CE1E33303000F3CF87 /* PBXTargetDependency */,
+			);
+			name = DerivePassUITests;
+			productName = DerivePassUITests;
+			productReference = 4D73B7C81E33303000F3CF87 /* DerivePassUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		4D8F97E21E29D9FF0070B586 /* DerivePass */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4D8F97FD1E29D9FF0070B586 /* Build configuration list for PBXNativeTarget "DerivePass" */;
@@ -261,6 +312,11 @@
 				ORGANIZATIONNAME = "Indutny Inc.";
 				TargetAttributes = {
 					4D3F05381E3274E200CA1C2A = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 4D8F97E21E29D9FF0070B586;
+					};
+					4D73B7C71E33303000F3CF87 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 4D8F97E21E29D9FF0070B586;
@@ -298,12 +354,20 @@
 			targets = (
 				4D8F97E21E29D9FF0070B586 /* DerivePass */,
 				4D3F05381E3274E200CA1C2A /* DerivePassTests */,
+				4D73B7C71E33303000F3CF87 /* DerivePassUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4D3F05371E3274E200CA1C2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D73B7C61E33303000F3CF87 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -328,6 +392,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D3F053C1E3274E200CA1C2A /* DerivePassTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D73B7C41E33303000F3CF87 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D73B7CB1E33303000F3CF87 /* DerivePassUITests.m in Sources */,
+				4D73B7D31E333DAF00F3CF87 /* common.c in Sources */,
+				4D73B7D41E333DAF00F3CF87 /* util.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,6 +437,11 @@
 			isa = PBXTargetDependency;
 			target = 4D8F97E21E29D9FF0070B586 /* DerivePass */;
 			targetProxy = 4D3F053E1E3274E200CA1C2A /* PBXContainerItemProxy */;
+		};
+		4D73B7CE1E33303000F3CF87 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D8F97E21E29D9FF0070B586 /* DerivePass */;
+			targetProxy = 4D73B7CD1E33303000F3CF87 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -409,6 +488,40 @@
 				PRODUCT_BUNDLE_IDENTIFIER = indutny.DerivePassTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DerivePass.app/DerivePass";
+			};
+			name = Release;
+		};
+		4D73B7CF1E33303000F3CF87 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = ../../deps/scrypt/out/Release/iphoneos;
+				HEADER_SEARCH_PATHS = (
+					../../deps/scrypt/include,
+					../../,
+				);
+				INFOPLIST_FILE = DerivePassUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = indutny.DerivePassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = DerivePass;
+			};
+			name = Debug;
+		};
+		4D73B7D01E33303000F3CF87 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = ../../deps/scrypt/out/Release/iphoneos;
+				HEADER_SEARCH_PATHS = (
+					../../deps/scrypt/include,
+					../../,
+				);
+				INFOPLIST_FILE = DerivePassUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = indutny.DerivePassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = DerivePass;
 			};
 			name = Release;
 		};
@@ -556,6 +669,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		4D73B7D11E33303000F3CF87 /* Build configuration list for PBXNativeTarget "DerivePassUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D73B7CF1E33303000F3CF87 /* Debug */,
+				4D73B7D01E33303000F3CF87 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		4D8F97DE1E29D9FF0070B586 /* Build configuration list for PBXProject "DerivePass" */ = {
 			isa = XCConfigurationList;

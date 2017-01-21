@@ -677,6 +677,7 @@
 				4D73B7D01E33303000F3CF87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4D8F97DE1E29D9FF0070B586 /* Build configuration list for PBXProject "DerivePass" */ = {
 			isa = XCConfigurationList;

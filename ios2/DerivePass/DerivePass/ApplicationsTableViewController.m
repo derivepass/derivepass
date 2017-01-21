@@ -53,6 +53,17 @@
 }
 
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+  [super setEditing:editing animated:animated];
+  if (editing) {
+    self.navigationItem.rightBarButtonItems = @[ self.editButtonItem ];
+  } else {
+    self.navigationItem.rightBarButtonItems =
+        @[ self.addButtonItem, self.editButtonItem ];
+  }
+}
+
+
 - (void)onDataUpdate {
   self.applications = [NSMutableArray array];
   for (Application* obj in self.dataController.applications) {

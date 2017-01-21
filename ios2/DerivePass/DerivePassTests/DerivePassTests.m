@@ -136,6 +136,10 @@
 
   XCTAssertEqualObjects([cryptor decrypt:[cryptor encrypt:longStr]], longStr);
 
+  // IV must be random
+  XCTAssertNotEqualObjects([cryptor encrypt:longStr],
+                           [cryptor encrypt:longStr]);
+
   // Decrypt failure
   uint8_t bytes2[] = {0xf3, 0x3b, 0x22, 0x21, 0xd5, 0x1d, 0xe5, 0xb5,
                       0x92, 0x17, 0xd9, 0xfa, 0x05, 0x83, 0x25, 0xa5,

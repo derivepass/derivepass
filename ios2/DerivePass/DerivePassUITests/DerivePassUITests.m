@@ -49,6 +49,7 @@ static const int kApplicationCount = 3;
 
   NSString* master = [NSString stringWithFormat:@"test/%llu", r];
 
+  // Enter master password
   XCUIApplication* app = [[XCUIApplication alloc] init];
   XCUIElement* masterPasswordSecureTextField =
       app.secureTextFields[@"Master Password"];
@@ -65,6 +66,8 @@ static const int kApplicationCount = 3;
 
   XCUIElementQuery* tablesQuery = app.tables;
   XCUIElement* elem;
+
+  // Create several applications with different domain name
   for (int i = 0; i < kApplicationCount; i++) {
     [app.navigationBars[@"Applications"].buttons[@"Add"] tap];
 
@@ -92,6 +95,9 @@ static const int kApplicationCount = 3;
     [app.navigationBars[@"Add"].buttons[@"Save"] tap];
   }
 
+  // Tap on each of them and verify that copied password is correct
+  NSPredicate* exists = [NSPredicate predicateWithFormat:@"exists == 1"];
+  NSPredicate* notExists = [NSPredicate predicateWithFormat:@"exists == 0"];
   for (int i = 0; i < kApplicationCount; i++) {
     elem = [tablesQuery.cells
                containingType:XCUIElementTypeStaticText
@@ -99,13 +105,18 @@ static const int kApplicationCount = 3;
                .element;
     [elem tap];
 
+    // Notification should flash and be gone
     XCUIElement* notification =
         app.staticTexts[@"Password copied to clipboard"];
-    NSPredicate* pred = [NSPredicate predicateWithFormat:@"exists == 1"];
-    [self expectationForPredicate:pred
+    [self expectationForPredicate:exists
               evaluatedWithObject:notification
                           handler:nil];
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:30.0 handler:nil];
+    [self expectationForPredicate:notExists
+              evaluatedWithObject:notification
+                          handler:nil];
+    [self waitForExpectationsWithTimeout:30.0 handler:nil];
+
 
     // Generate expectation value
     scrypt_state_t state;
@@ -123,6 +134,20 @@ static const int kApplicationCount = 3;
     NSString* password = [UIPasteboard generalPasteboard].string;
     XCTAssertEqualObjects(password, expected);
   }
+
+  // Get back to the main menu
+  [[[[app.navigationBars[@"Applications"]
+      childrenMatchingType:XCUIElementTypeButton] matchingIdentifier:@"Back"]
+      elementBoundByIndex:0] tap];
+
+  // Type master password again (this time once)
+  [masterPasswordSecureTextField typeText:master];
+  [masterPasswordSecureTextField typeText:@"\r"];
+
+  // Check that it loads apps
+  XCUIElement* domain = app.staticTexts[@"0-test.com"];
+  [self expectationForPredicate:exists evaluatedWithObject:domain handler:nil];
+  [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 @end

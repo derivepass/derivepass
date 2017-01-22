@@ -1,0 +1,20 @@
+{
+  "name": "derivepass-electron",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "derivepass",
+    "encrypt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.4.15",
+    "menubar": "^5.2.0"
+  }
+}

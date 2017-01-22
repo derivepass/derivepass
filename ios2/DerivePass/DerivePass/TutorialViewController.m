@@ -75,6 +75,7 @@
 
 
 - (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
   can_reset_ = YES;
 }
 

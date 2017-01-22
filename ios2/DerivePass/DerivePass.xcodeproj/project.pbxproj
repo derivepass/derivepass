@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D02DEFD1E351B5B0076B2F8 /* ValidationErrorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D02DEFC1E351B5B0076B2F8 /* ValidationErrorButton.m */; };
+		4D02DF001E351F7A0076B2F8 /* ValidationPopOverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D02DEFF1E351F7A0076B2F8 /* ValidationPopOverController.m */; };
 		4D3F05321E326DDF00CA1C2A /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3F05311E326DDF00CA1C2A /* Helpers.m */; };
 		4D3F053C1E3274E200CA1C2A /* DerivePassTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D3F053B1E3274E200CA1C2A /* DerivePassTests.m */; };
 		4D6349C31E2BFBD10051D4DF /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D6349C21E2BFBD10051D4DF /* CloudKit.framework */; };
@@ -55,6 +57,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4D02DEFB1E351B5B0076B2F8 /* ValidationErrorButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValidationErrorButton.h; sourceTree = "<group>"; };
+		4D02DEFC1E351B5B0076B2F8 /* ValidationErrorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ValidationErrorButton.m; sourceTree = "<group>"; };
+		4D02DEFE1E351F7A0076B2F8 /* ValidationPopOverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValidationPopOverController.h; sourceTree = "<group>"; };
+		4D02DEFF1E351F7A0076B2F8 /* ValidationPopOverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ValidationPopOverController.m; sourceTree = "<group>"; };
 		4D3F05301E326DDF00CA1C2A /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
 		4D3F05311E326DDF00CA1C2A /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
 		4D3F05391E3274E200CA1C2A /* DerivePassTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DerivePassTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +218,10 @@
 				4D6349DD1E2D2E680051D4DF /* TutorialViewController.m */,
 				4D6349DF1E2D45690051D4DF /* TutorialFinalViewController.h */,
 				4D6349E01E2D45690051D4DF /* TutorialFinalViewController.m */,
+				4D02DEFB1E351B5B0076B2F8 /* ValidationErrorButton.h */,
+				4D02DEFC1E351B5B0076B2F8 /* ValidationErrorButton.m */,
+				4D02DEFE1E351F7A0076B2F8 /* ValidationPopOverController.h */,
+				4D02DEFF1E351F7A0076B2F8 /* ValidationPopOverController.m */,
 			);
 			path = DerivePass;
 			sourceTree = "<group>";
@@ -411,9 +421,11 @@
 			files = (
 				4D8F97EE1E29D9FF0070B586 /* PasswordViewController.m in Sources */,
 				4D8F980A1E29DAA40070B586 /* common.c in Sources */,
+				4D02DEFD1E351B5B0076B2F8 /* ValidationErrorButton.m in Sources */,
 				4D8F97EB1E29D9FF0070B586 /* AppDelegate.m in Sources */,
 				4D8F97E81E29D9FF0070B586 /* main.m in Sources */,
 				4D94A8461E31452500D5E202 /* Application+CoreDataProperties.m in Sources */,
+				4D02DF001E351F7A0076B2F8 /* ValidationPopOverController.m in Sources */,
 				4DE5703F1E2AB7F600D55FBA /* EditApplicationTableViewController.m in Sources */,
 				4DE570331E2A9DF100D55FBA /* ApplicationsTableViewController.m in Sources */,
 				4DE570421E2AD6DF00D55FBA /* ApplicationTableViewCell.m in Sources */,

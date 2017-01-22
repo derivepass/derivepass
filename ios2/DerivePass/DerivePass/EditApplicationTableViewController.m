@@ -9,6 +9,7 @@
 //
 
 #import "EditApplicationTableViewController.h"
+#import "ValidationErrorButton.h"
 
 @interface EditApplicationTableViewController ()
 
@@ -44,11 +45,27 @@
 }
 
 
-static BOOL check_non_empty(NSString* v) { return v.length != 0; }
+static BOOL check_non_empty(NSString* v, NSString** msg) {
+  if (v.length == 0) {
+    *msg = @"Can\'t be empty";
+    return NO;
+  }
+  return YES;
+}
 
 
-static BOOL check_is_number(NSString* v) {
-  return v.length != 0 && atoi(v.UTF8String) >= 1;
+static BOOL check_is_number(NSString* v, NSString** msg) {
+  if (v.length == 0) {
+    *msg = @"Can\'t be empty";
+    return NO;
+  }
+
+  if (atoi(v.UTF8String) < 1) {
+    *msg = @"Must be a number > 1";
+    return NO;
+  }
+
+  return YES;
 }
 
 
@@ -59,18 +76,21 @@ static BOOL check_is_number(NSString* v) {
   UITextField* fields[] = {self.domainField, self.loginField,
                            self.revisionField};
   BOOL(*verifiers[])
-  (NSString*) = {check_non_empty, check_non_empty, check_is_number};
+  (NSString*, NSString**) = {check_non_empty, check_non_empty, check_is_number};
 
   for (int i = 0; i < 3; i++) {
     UITextField* field = fields[i];
+    NSString* msg = nil;
 
-    field.layer.borderWidth = 0.0;
+    field.rightViewMode = UITextFieldViewModeNever;
+    field.rightView = nil;
 
-    if (verifiers[i](field.text)) continue;
+    if (verifiers[i](field.text, &msg)) continue;
 
     valid = NO;
-    field.layer.borderColor = [[UIColor redColor] CGColor];
-    field.layer.borderWidth = 1.0;
+    field.rightView = [[ValidationErrorButton alloc] initWithMessage:msg
+                                             andParentViewController:self];
+    field.rightViewMode = UITextFieldViewModeAlways;
   }
 
   if (!valid) return;
@@ -97,7 +117,8 @@ static BOOL check_is_number(NSString* v) {
 - (IBAction)onFieldEdit:(id)sender {
   UITextField* field = sender;
 
-  field.layer.borderWidth = 0.0;
+  field.rightViewMode = UITextFieldViewModeNever;
+  field.rightView = nil;
 }
 
 @end

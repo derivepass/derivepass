@@ -20,19 +20,32 @@
 @end
 
 @implementation TutorialViewController {
-  NSInteger index_;
+  NSInteger current_;
+  NSInteger next_;
   BOOL sliding_;
+  BOOL can_reset_;
 }
 
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  self.label.text = [self.texts objectAtIndex:0];
   self.label.numberOfLines = 0;
 
-  if (self.image == nil) return;
+  current_ = 0;
+  if (self.image == nil) {
+    // No image - show just label
+    self.label.alpha = 1.0;
+    self.imageView.alpha = 0.0;
+    self.label.text = self.texts[0];
+  } else {
+    // Show just image
+    self.label.alpha = 0.0;
+    self.imageView.alpha = 1.0;
 
-  [self.imageView setImage:self.image];
+    [self.imageView setImage:self.image];
+  }
+
+  can_reset_ = YES;
 }
 
 
@@ -44,54 +57,58 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-
-  if (sliding_) return;
-
-  if (self.image == nil) {
-    index_ = 1;
-
-    self.label.alpha = 1.0;
-    self.imageView.alpha = 0.0;
-    self.label.text = self.texts[0];
-  } else {
-    index_ = 0;
-
-    self.label.alpha = 0.0;
-    self.imageView.alpha = 1.0;
-  }
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
 
-  if (index_ < self.texts.count) [self doSlide];
+  if (!can_reset_) return;
+  can_reset_ = NO;
+
+  if (self.image == nil)
+    next_ = current_ == 1 ? 2 : 1;
+  else
+    next_ = 1;
+  [self doSlide];
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated {
+  can_reset_ = YES;
 }
 
 
 - (void)doSlide {
-  if (sliding_) {
-    return;
-  }
+  if (sliding_) return;
+
+  __block NSInteger next = next_++;
+
+  if (next > self.texts.count + 1) return;
   sliding_ = YES;
 
   void (^done)(void) = ^{
-    if (++index_ > self.texts.count) return;
-
-    // No return
     sliding_ = NO;
+    current_ = next;
+
     [self doSlide];
   };
 
-  dispatch_time_t delay = dispatch_time(
-      DISPATCH_TIME_NOW, (index_ == 0 ? 750 : 1200) * NSEC_PER_MSEC);
   dispatch_queue_t queue = dispatch_get_main_queue();
+
+  // Sleep a bit first
+  int64_t sleepTime = (current_ == 0 ? 750 : 1200) * NSEC_PER_MSEC;
+  if (next < current_) sleepTime = 250 * NSEC_PER_MSEC;
+
+  dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, sleepTime);
   dispatch_after(delay, queue, ^{
-    if (index_ == 0) {
+    // Current == image slide, slightly dim it and show text
+    if (current_ == 0) {
+      self.label.text = self.texts[next - 1];
       [UIView animateWithDuration:0.75
           animations:^{
-            self.label.alpha = 1.0;
             self.imageView.alpha = 0.3;
+            self.label.alpha = 1.0;
           }
           completion:^(BOOL finished) {
             done();
@@ -99,23 +116,31 @@
       return;
     }
 
-    [UIView animateWithDuration:1.4
+    // Current == text, dim image and hide text
+    [UIView animateWithDuration:current_ == 0 ? 1.4 : 0.75
         animations:^{
+          self.imageView.alpha = 0.3;
           self.label.alpha = 0.0;
         }
         completion:^(BOOL finished) {
           NSTimeInterval dur;
-          if (index_ == self.texts.count) {
+
+          // Last slide
+          if (next == self.texts.count + 1) {
             dur = 3.0;
             self.label.text = @"Please swipe to continue...";
           } else {
             dur = 0.3;
-            self.label.text = self.texts[index_];
+            if (next > 0) self.label.text = self.texts[next - 1];
           }
 
+          // Either show image or show text
           [UIView animateWithDuration:dur
               animations:^{
-                self.label.alpha = 1.0;
+                if (next == 0)
+                  self.imageView.alpha = 1.0;
+                else
+                  self.label.alpha = 1.0;
               }
               completion:^(BOOL finished) {
                 done();

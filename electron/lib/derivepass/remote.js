@@ -121,13 +121,13 @@ Remote.prototype.updateApp = function updateApp(app) {
     if (res.modified && res.modified.timestamp == app.modifiedAt)
       return;
 
-    res.fields.domain.value = app.get('domain');
-    res.fields.login.value = app.get('login');
-    res.fields.revision.value = app.get('revision');
+    res.fields.domain.value = app.getRaw('domain');
+    res.fields.login.value = app.getRaw('login');
+    res.fields.revision.value = app.getRaw('revision');
 
-    res.fields.master.value = app.get('master');
-    res.fields.index.value = app.get('index');
-    res.fields.removed.value = app.get('removed') ? 1 : 0;
+    res.fields.master.value = app.getRaw('master');
+    res.fields.index.value = app.getRaw('index');
+    res.fields.removed.value = app.getRaw('removed') ? 1 : 0;
 
     this.db.saveRecords(res).then((res) => {
       if (res.hasErrors) {

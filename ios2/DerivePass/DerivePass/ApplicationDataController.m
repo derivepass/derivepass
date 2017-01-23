@@ -204,17 +204,8 @@
         }
 
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-          NSComparisonResult cmp = [r.modificationDate compare:obj.changed_at];
-
-          // Cloud item is newer!
-          if (cmp == NSOrderedDescending) {
-            [self updateObject:obj withRecord:r];
-            [self coreDataSave];
-            return;
-          }
-
           // Skip items that are the same
-          if (cmp == NSOrderedSame) return;
+          if ([r.modificationDate isEqualToDate:obj.changed_at]) return;
 
           // Copy these as they are, because they are encrypted
           r[@"domain"] = [obj valueForKey:@"domain"];

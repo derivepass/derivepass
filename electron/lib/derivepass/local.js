@@ -4,12 +4,14 @@ const util = require('util');
 const EventEmitter = require('events').EventEmitter;
 const App = require('./app');
 
-function Local(cryptor) {
+function Local(cryptor, options) {
   EventEmitter.call(this);
 
   this.cryptor = cryptor;
   this.list = [];
   this.storage = window.localStorage;
+
+  this.env = options.env
 
   this.remote = null;
 
@@ -28,7 +30,8 @@ Local.prototype.load = function load() {
       continue;
 
     const json = JSON.parse(storage.getItem(key));
-    this.list.push(new App(key.slice(4), json, this.cryptor));
+    const uuid = key.replace(/^app\/[^\/]+\//, '');
+    this.list.push(new App(uuid, json, this.cryptor));
   }
 };
 
@@ -46,7 +49,7 @@ Local.prototype.save = function save(onlyLocal) {
     changed = true;
 
     app.changed = false;
-    this.storage.setItem(`app/${app.uuid}`, JSON.stringify(app));
+    this.storage.setItem(`app/${this.env}/${app.uuid}`, JSON.stringify(app));
     if (!onlyLocal)
       this.remote.updateApp(app);
   }

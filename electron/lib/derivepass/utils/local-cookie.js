@@ -1,8 +1,11 @@
 'use strict';
 
+exports.env = '';
+
 // Really dumb local cookie storage for CloudKit
 function parse() {
-  return JSON.parse(window.localStorage.getItem('config/web-cookies') || '{}');
+  return JSON.parse(window.localStorage.getItem(
+      `config/${exports.env}/web-cookies`) || '{}');
 }
 
 Object.defineProperty(window.document, 'cookie', {
@@ -26,6 +29,7 @@ Object.defineProperty(window.document, 'cookie', {
       delete json[key];
     else
       json[key] = value;
-    window.localStorage.setItem('config/web-cookies', JSON.stringify(json));
+    window.localStorage.setItem(`config/${exports.env}/web-cookies`,
+                                JSON.stringify(json));
   }
 });

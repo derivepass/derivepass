@@ -3,24 +3,16 @@
 const electron = require('electron');
 const CloudKit = require('./cloudkit');
 
-const API_TOKEN =
-    '30bf89337751af96bf704397f1936a412551ec9f24b91819c07400cd7f6c4324';
+const API_TOKEN = {
+  development: '30bf89337751af96bf704397f1936a41' +
+               '2551ec9f24b91819c07400cd7f6c4324',
+  production: '3f90a4ad293a3e4b7005dfe5c4b3872e' +
+              'b9d5cc91041843a297750d047888f824'
+};
 
-CloudKit.configure({
-  containers: [{
-    containerIdentifier: 'iCloud.com.indutny.DerivePass',
-    apiTokenAuth: {
-      apiToken: API_TOKEN,
-      persist: true
-    },
-    environment: process.env.NODE_ENV === 'development' ? 'development' :
-        'production'
-  }]
-});
+let configured = false;
 
 // Totally a hack to handle Apple ID authentication
-// CloudKit can't live without cookies
-require('./utils/local-cookie.js');
 
 // CloudKit opens new window for auth
 window.open = (href) => {
@@ -36,6 +28,23 @@ window.open = (href) => {
 
 // TODO(indutny): handle promise rejections?
 function Remote(options) {
+  if (!configured) {
+    configured = true;
+    CloudKit.configure({
+      containers: [{
+        containerIdentifier: 'iCloud.com.indutny.DerivePass',
+        apiTokenAuth: {
+          apiToken: API_TOKEN[options.env],
+          persist: true
+        },
+        environment: options.env
+      }]
+    });
+
+    // CloudKit can't live without cookies
+    require('./utils/local-cookie.js').env = options.env;
+  }
+
   this.local = options.local;
   this.container = CloudKit.getDefaultContainer();
   this.db = this.container.privateCloudDatabase;

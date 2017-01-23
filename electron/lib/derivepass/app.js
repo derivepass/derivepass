@@ -45,3 +45,9 @@ Application.prototype.getRaw = function getRaw(key) {
 Application.prototype.toJSON = function toJSON() {
   return this.json;
 };
+
+Application.prototype.passwordFromMaster = function passwordFromMaster(master,
+                                                                       cb) {
+  this.cryptor.passwordFromMaster(
+      master, this.get('domain'), this.get('login'), this.get('revision'), cb);
+};

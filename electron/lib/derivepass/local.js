@@ -69,10 +69,8 @@ Local.prototype.mergeRemoteApp = function mergeRemoteApp(remote) {
     found = app;
     break;
   }
-  if (!found) {
-    found = new App(remote.recordName, {}, this.cryptor);
-    this.list.push(found);
-  }
+  if (!found)
+    found = this.createApp();
 
   const app = found;
   app.setRaw('domain', remote.fields.domain.value);
@@ -82,6 +80,12 @@ Local.prototype.mergeRemoteApp = function mergeRemoteApp(remote) {
   app.setRaw('index', remote.fields.index.value);
   app.setRaw('removed', remote.fields.removed.value ? true : false);
   app.setRaw('changedAt', remote.modified.timestamp);
+};
+
+Local.prototype.createApp = function createApp() {
+  const app = new App(remote.recordName, {}, this.cryptor);
+  this.list.push(app);
+  return app;
 };
 
 Local.prototype.getApplications = function getApplications(master) {

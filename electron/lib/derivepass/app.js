@@ -30,12 +30,16 @@ Application.prototype.setRaw = function setRaw(key, value) {
 Application.prototype.get = function get(key) {
   const res = this.getRaw(key);
 
-  if (key === 'domain' || key === 'login')
-    return this.cryptor.decrypt(res);
-  else if (key === 'revision')
-    return this.cryptor.decryptNumber(res);
-  else
-    return res;
+  try {
+    if (key === 'domain' || key === 'login')
+      return this.cryptor.decrypt(res);
+    else if (key === 'revision')
+      return this.cryptor.decryptNumber(res);
+    else
+      return res;
+  } catch (e) {
+    return '<decryption failed>';
+  }
 };
 
 Application.prototype.getRaw = function getRaw(key) {

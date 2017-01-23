@@ -4,9 +4,10 @@ const util = require('util');
 const EventEmitter = require('events').EventEmitter;
 const App = require('./app');
 
-function Local() {
+function Local(cryptor) {
   EventEmitter.call(this);
 
+  this.cryptor = cryptor;
   this.list = [];
   this.storage = window.localStorage;
 
@@ -27,7 +28,7 @@ Local.prototype.load = function load() {
       continue;
 
     const json = JSON.parse(storage.getItem(key));
-    this.list.push(new App(key.slice(4), json));
+    this.list.push(new App(key.slice(4), json, this.cryptor));
   }
 };
 
@@ -66,7 +67,7 @@ Local.prototype.mergeRemoteApp = function mergeRemoteApp(remote) {
     break;
   }
   if (!found) {
-    found = new App(remote.recordName, {});
+    found = new App(remote.recordName, {}, this.cryptor);
     this.list.push(found);
   }
 

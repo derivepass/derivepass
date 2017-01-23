@@ -9,7 +9,8 @@ const Cryptor = require('./derivepass/cryptor');
 const emoji = new Emoji('master', 'emoji');
 const appList = new ApplicationList('apps');
 
-const local = new Local();
+const cryptor = new Cryptor();
+const local = new Local(cryptor);
 const remote = new Remote({ local: local });
 
 // For syncing back to iCloud
@@ -19,6 +20,19 @@ local.on('update', () => {
   console.log('updated');
 });
 
+let timeout;
+
 emoji.on('emoji', (emoji, master) => {
-  appList.setApplications(local.getApplications(emoji), master);
+  function onKeys(err) {
+    if (err)
+      throw err;
+
+    appList.setApplications(local.getApplications(emoji));
+  }
+
+  cryptor.reset();
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    cryptor.deriveKeys(master, onKeys);
+  }, 250);
 });

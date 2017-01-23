@@ -5,6 +5,8 @@ function AppList(id) {
 }
 module.exports = AppList;
 
-AppList.prototype.setApplications = function setApplications(list, master) {
-  this.content.textContent = JSON.stringify(list);
+AppList.prototype.setApplications = function setApplications(list) {
+  this.content.textContent = list.map((app) => {
+    return app.get('domain') + '|' + app.get('login');
+  }).join('\n');
 };

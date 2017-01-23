@@ -46,19 +46,23 @@ function Remote(options) {
 }
 module.exports = Remote;
 
+Remote.prototype._logError = function _logError(err) {
+  console.error(err);
+};
+
 Remote.prototype.initAuth = function initAuth() {
   this.container.setUpAuth().then((user) => {
     if (user)
       this.onSignIn(user);
     else
       this.onSignOut();
-  }).catch((err) => {});
+  }).catch((err) => { this._logError(err); });
 };
 
 Remote.prototype.onSignIn = function onSignIn(user) {
   this.container.whenUserSignsOut()
     .then(user => this.onSignOut())
-    .catch((err) => {});
+    .catch((err) => { this._logError(err); });
 
   this.online = true;
   this.sync();
@@ -67,7 +71,7 @@ Remote.prototype.onSignIn = function onSignIn(user) {
 Remote.prototype.onSignOut = function onSignOut() {
   this.container.whenUserSignsIn()
     .then(user => this.onSignIn(user))
-    .catch((err) => {});
+    .catch((err) => { this._logError(err); });
 
   this.online = false;
 };
@@ -79,41 +83,65 @@ Remote.prototype.sync = function sync() {
   }).then((res) => {
     // TODO(indutny): handle me
     if (res.hasErrors) {
-      console.error(res.errors);
+      this._logError(res.errors);
       return;
     }
 
-    console.log(res.records);
     for (let i = 0; i < res.records.length; i++)
       this.local.mergeRemoteApp(res.records[i]);
-  }).catch((err) => {});
+    this.local.save(true);
+  }).catch((err) => { this._logError(err); });
 };
 
 Remote.prototype.updateApp = function updateApp(app) {
   this.db.fetchRecords(app.uuid).then((res) => {
-    // TODO(indutny): retry
     if (res.hasErrors) {
-      console.error(res.errors);
-      return;
+      // Unexpected error!
+      if (res.errors[0].ckErrorCode !== 'NOT_FOUND') {
+        this._logError(res.errors);
+        return;
+      }
+
+      // Not found - create a new one
+      res = {
+        recordType: 'EncryptedApplication',
+        recordName: app.uuid,
+        fields: {
+          domain: {},
+          login: {},
+          revision: {},
+          master: {},
+          index: {},
+          removed: {}
+        }
+      };
     }
 
-    // TODO(indutny): check that modification date is less than of the app
+    // Skip if items are the same
+    if (res.modified && res.modified.timestamp == app.modifiedAt)
+      return;
 
-    res.fields.domain.value = app.domain;
-    res.fields.login.value = app.login;
-    res.fields.revision.value = app.revision;
+    res.fields.domain.value = app.get('domain');
+    res.fields.login.value = app.get('login');
+    res.fields.revision.value = app.get('revision');
 
-    res.fields.master.value = app.master;
-    res.fields.index.value = app.index;
-    res.fields.removed.value = app.removed ? 1 : 0;
+    res.fields.master.value = app.get('master');
+    res.fields.index.value = app.get('index');
+    res.fields.removed.value = app.get('removed') ? 1 : 0;
 
     this.db.saveRecords(res).then((res) => {
       if (res.hasErrors) {
-        console.error(res.errors);
+        if (res.errors[0].ckErrorCode !== 'CONFLICT') {
+          this._logError(res.errors);
+          return;
+        }
+
+        // Conflict - retry
+        this.updateApp(app);
         return;
       }
 
       // Done!
-    }).catch((err) => {});
-  }).catch((err) => {});
+    }).catch((err) => { this._logError(err); });
+  }).catch((err) => { this._logError(err); });
 };

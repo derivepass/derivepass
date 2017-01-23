@@ -1,5 +1,8 @@
 #ifndef SRC_COMMON_H_
 #define SRC_COMMON_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "scrypt.h"
 
@@ -10,4 +13,7 @@ static const int kDeriveScryptP = 4;
 
 char* derive(scrypt_state_t* state, const char* secret, const char* domain);
 
+#ifdef __cplusplus
+}
+#endif
 #endif  /* SRC_COMMON_H_ */

@@ -5,7 +5,7 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter=spec test/*-test.js"
   },
   "keywords": [
     "derivepass",
@@ -19,5 +19,8 @@
     "electron": "^1.4.15",
     "menubar": "^5.2.0",
     "nan": "^2.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
   }
 }

@@ -6,7 +6,13 @@ function AppList(id) {
 module.exports = AppList;
 
 AppList.prototype.setApplications = function setApplications(list) {
-  this.content.textContent = list.map((app) => {
-    return app.get('domain') + '|' + app.get('login');
-  }).join('\n');
+  this.content.content = '';
+
+  list.forEach((app) => {
+    const container = document.createElement('div');
+    container.id = app.uuid;
+    container.textContent = app.get('domain') + ' > ' + app.get('login');
+
+    this.content.appendChild(container);
+  });
 };

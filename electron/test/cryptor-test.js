@@ -54,4 +54,20 @@ describe('Crypto', () => {
     assert.notEqual(c.encrypt('ohai').toString('hex'),
                     c.encrypt('ohai').toString('hex'));
   });
+
+  it('should generate password', (cb) => {
+    const c = new Cryptor();
+
+    c.passwordFromMaster('hello', 'gmail.com', 'test', 1, (err, pass) => {
+      assert(!err);
+      assert.strictEqual(pass, 'b4r5cMNCdcLJZ5aroCo5CGM7');
+
+      c.passwordFromMaster('hello', 'gmail.com', 'test', 2, (err, pass) => {
+        assert(!err);
+        assert.strictEqual(pass, '.Tzt73chSH7xCo_dvz_eraC_');
+
+        cb();
+      });
+    });
+  });
 });

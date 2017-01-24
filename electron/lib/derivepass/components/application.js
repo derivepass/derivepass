@@ -38,7 +38,7 @@ class Application extends React.Component {
     const login = e('p', { className: 'application-login' }, props.app.login);
 
     const edit = e('button', {
-      className: 'application-edit',
+      className: 'application-edit application-button',
       onClick: (e) => {
         e.stopPropagation();
         this.onEditClick();
@@ -76,7 +76,8 @@ class Application extends React.Component {
           onChange: (e) => this.onFieldChange(field, e.target.value),
           value: this.state.fields[field],
           placeholder: placeholder
-        })));
+        })),
+      e('div', { className: 'clear' }));
   }
 
   onFieldChange(field, value) {
@@ -94,7 +95,7 @@ class Application extends React.Component {
     const isNew = props.app === null;
 
     const save = e('button', {
-      className: 'application-save',
+      className: 'application-save application-button',
       onClick: (e) => {
         e.stopPropagation();
         const fields = this.state.fields;
@@ -120,7 +121,7 @@ class Application extends React.Component {
     }, '💾');
 
     const remove = !isNew && e('button', {
-      className: 'application-remove',
+      className: 'application-remove application-button',
       onClick: (e) => {
         e.stopPropagation();
         this.props.onRemove();

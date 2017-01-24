@@ -10,7 +10,7 @@ function mapStateToProps(state, ownProps) {
   if (state.master.computing.status !== 'READY' ||
       state.master.emoji !== state.master.computing.emoji ||
       state.master.password.length === 0) {
-    return { applications: [] };
+    return { master: state.master, applications: [] };
   }
 
   const apps = state.applications.list.filter((app) => {

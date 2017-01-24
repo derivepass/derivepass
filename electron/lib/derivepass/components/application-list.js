@@ -9,6 +9,21 @@ const e = React.createElement;
 
 class ApplicationList extends React.Component {
   render() {
+    let noApps;
+
+    if (!this.props.allowCreate && this.props.applications.length === 0) {
+      if (this.props.master.password.length !== 0) {
+        noApps = e('article', {
+          className: 'application-list-computing'
+        }, e('p', {}, 'Please wait...'));
+      } else {
+        noApps = e('article', {
+          className: 'application-list-no-apps'
+        }, e('p', {}, 'No applications yet...'),
+           e('p', {}, 'Please enter master password first'));
+      }
+    }
+
     return e('section', {
       className: 'application-list'
     }, this.props.applications.map((raw) => {
@@ -26,7 +41,7 @@ class ApplicationList extends React.Component {
           index: this.props.applications.length
         }));
       }
-    }));
+    }), noApps);
   }
 }
 module.exports = ApplicationList;

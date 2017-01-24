@@ -10,6 +10,10 @@ body {
       Sans-serif;
 }
 
+.clear {
+  clear: both;
+}
+
 .page > .tab-view .tab-view-nav {
   text-align: right;
   background: #111;
@@ -81,8 +85,32 @@ body {
   font-size: 24px;
 }
 
+@keyframes shake {
+  0% {
+    margin-left: 0px;
+  }
+
+  25% {
+    margin-left: -8px;
+  }
+
+  50% {
+    margin-left: 0px;
+  }
+
+  75% {
+    margin-left: 8px;
+  }
+
+  100% {
+    margin-left: 0px;
+  }
+}
+
 .master .master-password-shake {
-  box-shadow: 0 0 6px red;
+  animation-timing-function: ease-in-out;
+  animation-duration: 0.3s;
+  animation-name: shake;
 }
 
 /* Settings pane */
@@ -101,6 +129,25 @@ body {
 
 .application-list .application-computing {
   background: #777;
+}
+
+.application-list .application .application-field-label {
+  margin: 4px 0;
+}
+
+.application-list .application .application-field-label input {
+  border: 1px solid #eee;
+  float: right;
+}
+
+.application-list .application .application-button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #111;
+  background: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  margin-right: 4px;
 }
 
 .application-list .application .application-domain {

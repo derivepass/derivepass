@@ -92,6 +92,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   let timer = null;
   return function componentMap(dispatch, ownProps) {
     return {
+      computeEmoji: computeEmoji,
       onChange: (master, computing) => {
         const emoji = computeEmoji(master);
         if (timer)
@@ -109,6 +110,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         }, KEY_DELAY);
 
         dispatch(actions.updateMaster(master, emoji));
+      },
+      onSubmit: () => {
+        dispatch(actions.selectTab('APPLICATIONS'));
       }
     };
   };

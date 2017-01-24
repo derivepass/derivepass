@@ -66,7 +66,7 @@ class Application extends React.Component {
     }));
   }
 
-  input(label, field) {
+  input(label, field, placeholder) {
     return e('section', { className: 'application-field' },
       e('label', { className: 'application-field-label' },
         e('span', {}, label),
@@ -74,7 +74,8 @@ class Application extends React.Component {
           className: `application-${field}`,
           type: field === 'revision' ? 'number' : 'text',
           onChange: (e) => this.onFieldChange(field, e.target.value),
-          value: this.state.fields[field]
+          value: this.state.fields[field],
+          placeholder: placeholder
         })));
   }
 
@@ -98,6 +99,7 @@ class Application extends React.Component {
         e.stopPropagation();
         const fields = this.state.fields;
 
+        // TODO(indutny): present error
         if (fields.domain.length === 0 ||
             fields.login.length === 0 ||
             (fields.revision | 0) < 1) {
@@ -130,8 +132,8 @@ class Application extends React.Component {
     return e('article', {
       className: 'application application-edit'
     }, title,
-       this.input('Domain:', 'domain'),
-       this.input('Login:', 'login'),
+       this.input('Domain:', 'domain', 'gmail.com'),
+       this.input('Login:', 'login', 'username'),
        this.input('Revision:', 'revision'),
        save, remove);
   }

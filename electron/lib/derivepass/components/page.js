@@ -34,7 +34,12 @@ class Page extends React.Component {
       id: 'MASTER',
       title: 'Master',
       elem: e(MasterPassword, {
-        cryptor: this.cryptor
+        cryptor: this.cryptor,
+        hasAppsForEmoji: (emoji) => {
+          return this.store.getState().applications.list.some((app) => {
+            return app.master === emoji;
+          });
+        }
       })
     };
   }

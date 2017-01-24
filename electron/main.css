@@ -52,9 +52,24 @@ body {
   margin: -60px 0 0 -160px;
 }
 
+.master-confirm {
+  margin-top: -81px;
+}
+
 .master .emoji {
   font-size: 32px;
   margin-bottom: 8px;
+}
+
+.master .emoji-confirm {
+  overflow: hidden;
+  height: 0;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.master .emoji-confirm-visible {
+  height: 42px;
 }
 
 .master .master-password {
@@ -64,6 +79,10 @@ body {
   padding: 8px;
   line-height: 24px;
   font-size: 24px;
+}
+
+.master .master-password-shake {
+  box-shadow: 0 0 6px red;
 }
 
 /* Settings pane */

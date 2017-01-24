@@ -6,17 +6,9 @@
     <meta charset="utf-8"/>
   </head>
   <body>
-    <section id=apple-sign-in-button></section>
-    <section id=apple-sign-out-button></section>
-
-    <section id=master-view>
-      <p id=emoji>😬</p>
-      <input type=password id=master placeholder="Master Password" />
+    <section id=root>
     </section>
-
-    <section id=apps>
-    </section>
-
-    <script>require('.')</script>
+    <script src="https://cdn.apple-cloudkit.com/ck/2/cloudkit.js"></script>
+    <script>require('.').start('root')</script>
   </body>
 </html>

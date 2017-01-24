@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "main": "lib/index.js",
+  "main": "lib/derivepass.js",
   "scripts": {
     "test": "mocha --reporter=spec --timeout=10000 test/*-test.js"
   },
@@ -18,7 +18,12 @@
     "bn.js": "^4.11.6",
     "electron": "^1.4.15",
     "menubar": "^5.2.0",
-    "nan": "^2.5.1"
+    "nan": "^2.5.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "mocha": "^3.2.0"

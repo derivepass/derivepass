@@ -23,20 +23,51 @@ AppList.prototype.reload = function reload() {
   if (this.emoji === null || this.master === null)
     return;
 
-  const apps = local.getApplications(emoji);
+  const apps = this.local.getApplications(this.emoji);
 
   this.content.innerHTML = '';
 
   apps.forEach((app) => {
-    const container = document.createElement('div');
+    const container = document.createElement('article');
     container.className = 'application';
     container.id = app.uuid;
-    container.textContent = app.get('domain') + ' > ' + app.get('login');
 
-    container.onclick = (e) => {
+    const domain = document.createElement('div');
+    domain.className = 'application-domain';
+    domain.textContent = app.get('domain');
+
+    const login = document.createElement('div');
+    login.className = 'application-login';
+    login.textContent = app.get('login');
+
+    const copy = document.createElement('button');
+    copy.className = 'application-buttons-button application-buttons-copy';
+    copy.textContent = '📋';
+
+    const remove = document.createElement('button');
+    remove.className = 'application-buttons-button application-buttons-remove';
+    remove.textContent = 'X';
+
+    const edit = document.createElement('button');
+    edit.className = 'application-buttons-button application-buttons-edit';
+    edit.textContent = '✏️';
+
+    const buttons = document.createElement('div');
+    buttons.className = 'application-buttons';
+    buttons.appendChild(copy);
+    buttons.appendChild(edit);
+    buttons.appendChild(remove);
+
+    container.appendChild(buttons);
+    container.appendChild(domain);
+    container.appendChild(login);
+
+    copy.onclick = (e) => {
       e.preventDefault();
+      copy.disabled = true;
 
       app.passwordFromMaster(this.master, (err, pass) => {
+        copy.disabled = false;
         if (err)
           throw err;
 
@@ -47,6 +78,15 @@ AppList.prototype.reload = function reload() {
       return false;
     };
 
+    remove.onclick = (e) => {
+      e.preventDefault();
+
+      this.content.removeChild(container);
+
+      app.set('removed', true);
+      this.local.save();
+    };
+
     this.content.appendChild(container);
   });
 };
@@ -54,19 +94,17 @@ AppList.prototype.reload = function reload() {
 AppList.prototype.setMaster = function setMaster(emoji, master) {
   this.emoji = null;
   this.master = null;
+  this.cryptor.reset();
 
-  function onKeys(err) {
-    if (err)
-      throw err;
-
-    this.emoji = emoji;
-    this.master = master;
-    this.reload();
-  }
-
-  cryptor.reset();
   clearTimeout(this.timer);
   this.timer = setTimeout(() => {
-    this.cryptor.deriveKeys(master, onKeys);
+    this.cryptor.deriveKeys(master, (err) => {
+      if (err)
+        throw err;
+
+      this.emoji = emoji;
+      this.master = master;
+      this.reload();
+    });
   }, 250);
 };

@@ -50,6 +50,6 @@ menubar.on('ready', () => {
 });
 
 menubar.on('after-create-window', () => {
-  if (process.env.NODE_ENV === 'development')
+  if (process.env.NODE_ENV !== 'production')
     menubar.window.webContents.openDevTools({ mode: 'detach' });
 });

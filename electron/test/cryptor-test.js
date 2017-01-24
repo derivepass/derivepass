@@ -3,7 +3,7 @@
 const assert = require('assert');
 const crypto = require('crypto');
 const Buffer = require('buffer').Buffer;
-const Cryptor = require('../lib/derivepass/cryptor');
+const Cryptor = require('../').Cryptor;
 
 describe('Crypto', () => {
   it('should support old format', () => {

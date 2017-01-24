@@ -2,6 +2,10 @@
 
 exports.env = '';
 
+// Only in browser!
+if (typeof window === 'undefined')
+  return;
+
 // Really dumb local cookie storage for CloudKit
 function parse() {
   return JSON.parse(window.localStorage.getItem(

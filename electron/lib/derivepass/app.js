@@ -3,7 +3,7 @@
 function Application(uuid, json, cryptor) {
   this.cryptor = cryptor;
   this.uuid = uuid;
-  this.json = {};
+  this.json = json;
   this.changed = false;
 }
 module.exports = Application;

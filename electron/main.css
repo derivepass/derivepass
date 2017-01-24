@@ -1,3 +1,118 @@
-#appleid-login {
-  height: 256px;
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, Optima, Helvetica,
+      Sans-serif;
+}
+
+.page > .tab-view .tab-view-nav {
+  text-align: right;
+  background: #111;
+  height: 32px;
+  padding: 4px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  margin: 0 0 8px 0;
+}
+
+.page > .tab-view .tab-view-nav .tab-view-nav-button {
+  margin: 2px 4px 2px 0;
+  height: 24px;
+  width: 64px;
+  padding: 2px 6px;
+  line-height: 20px;
+  background: #eee;
+  color: #111;
+}
+
+.page > .tab-view .tab-view-nav .tab-view-nav-button-active {
+  background: #fff;
+}
+
+.page > .tab-view .tab-view-content {
+  padding: 4px 8px;
+}
+
+.page > .tab-view .tab-view-content .tab-view-content-view-inactive {
+  display: none;
+}
+
+/* Master pane */
+
+.master {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 120px;
+  margin: -60px 0 0 -160px;
+}
+
+.master .emoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.master .master-password {
+  text-align: center;
+  height: 24px;
+  border: 1px solid #111;
+  padding: 8px;
+  line-height: 24px;
+  font-size: 24px;
+}
+
+/* Settings pane */
+
+.config {
+  text-align: left;
+}
+
+/* Applications pane */
+
+#apps .application {
+  border: 1px solid #111;
+  text-align: left;
+}
+
+#apps .application .application-domain {
+  font-size: 24px;
+}
+
+#apps .application .application-login {
+  font-size: 16px;
+}
+
+#apps .application .application-buttons {
+  float: right;
+}
+
+#apps .application .application-buttons .application-buttons-button {
+  width: 16px;
+  height: 16px;
+  background: #eee;
+  color: #111;
+  border: 1px solid #111;
+}
+
+#new-app {
+  text-align: center;
+}
+
+#new-app .new-app-submit {
+  padding: 4px 8px;
+  background: #eee;
+  color: #111;
+  border: 1px solid #111;
+}
+
+#new-app input {
+  display: block;
+  border: 1px solid #111;
+  padding: 4px 8px;
+  margin: 4px 2px;
 }

@@ -37,7 +37,7 @@ class ApplicationList extends React.Component {
         onClick: () => {
           this.setState({ computing: true });
           cryptor.passwordFromMaster(master, domain, login, revision, (err,
-                                                                       p,ass) => {
+                                                                       p) => {
             if (err)
               throw err;
 

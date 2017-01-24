@@ -53,13 +53,9 @@ class RemoteStorage extends React.Component {
 
     this.store = params.store;
     this.online = typeof CloudKit !== 'undefined';
-    if (!this.online) {
-      this.container = null;
-      this.db = null;
-      this.lastState = null;
-      this.unsubscribe = null;
+
+    if (!this.online)
       return;
-    }
 
     configure();
 
@@ -70,6 +66,10 @@ class RemoteStorage extends React.Component {
     this.unsubscribe = null;
 
     this.setupAuth();
+
+    this.syncQueue = false;
+    this.fetchQueue = false;
+    this.saveQueue = false;
   }
 
   _logError(err) {
@@ -91,6 +91,9 @@ class RemoteStorage extends React.Component {
       .then(user => this.onSignOut())
       .catch((err) => { this._logError(err); });
 
+    // Start sync early to optimize fetch records from initial apps
+    this.sync();
+
     this.lastState = this.store.getState();
     this.unsubscribe = this.store.subscribe(() => {
       this.onStateChange();
@@ -98,8 +101,6 @@ class RemoteStorage extends React.Component {
 
     // Handle initial applications
     this.lastState.applications.forEach(app => this.onAppChange(app));
-
-    this.sync();
   }
 
   onSignOut() {
@@ -131,16 +132,93 @@ class RemoteStorage extends React.Component {
     });
   }
 
-  onAppChange(app) {
-    this.db.fetchRecords(app.uuid).then((res) => {
-      if (res.hasErrors) {
-        // Unexpected error!
-        if (res.errors[0].ckErrorCode !== 'NOT_FOUND') {
-          this._logError(res.errors);
-          return;
-        }
+  fetchRecord(uuid, callback) {
+    // `.sync()` is running, let it help us!
+    if (this.syncQueue) {
+      const item = {
+        retry: () => { this.fetchRecord(uuid, callback); },
+        done: callback
+      };
 
-        // Not found - create a new one
+      if (this.syncQueue.has(uuid))
+        this.syncQueue.get(uuid).push(item);
+      else
+        this.syncQueue.set(uuid, [ item ]);
+      return;
+    }
+
+    let run = !this.fetchQueue;
+    if (run)
+      this.fetchQueue = new Map();
+
+    if (this.fetchQueue.has(uuid))
+      this.fetchQueue.get(uuid).push(callback);
+    else
+      this.fetchQueue.set(uuid, [ callback ]);
+
+    if (!run)
+      return;
+
+    process.nextTick(() => {
+      this.bulkFetchRecords();
+    });
+  }
+
+  bulkFetchRecords() {
+    const queue = this.fetchQueue;
+    this.fetchQueue = false;
+
+    this.db.fetchRecords(Array.from(queue.keys())).then((res) => {
+      this._handleBulkResponse(res, queue);
+    });
+  }
+
+  saveRecord(rec, callback) {
+    let run = !this.saveQueue;
+    if (run)
+      this.saveQueue = new Map();
+
+    if (this.saveQueue.has(rec))
+      this.saveQueue.get(rec).push(callback);
+    else
+      this.saveQueue.set(rec, [ callback ]);
+
+    if (!run)
+      return;
+
+    process.nextTick(() => {
+      this.bulkSaveRecords();
+    });
+  }
+
+  bulkSaveRecords() {
+    const queue = this.saveQueue;
+    this.saveQueue = false;
+
+    this.db.saveRecords(Array.from(queue.keys())).then((res) => {
+      this._handleBulkResponse(res, queue);
+    });
+  }
+
+  _handleBulkResponse(res, queue) {
+    if (res.hasErrors) {
+      for (let i = 0; i < res.errors.length; i++) {
+        const err = res.errors[i];
+
+        queue.get(err.recordName).forEach(cb => cb(err.ckErrorCode));
+      }
+    }
+
+    for (let i = 0; i < res.records.length; i++) {
+      const rec = res.records[i];
+      queue.get(rec.recordName).forEach(cb => cb(null, rec));
+    }
+  }
+
+  onAppChange(app) {
+    this.fetchRecord(app.uuid, (err, res) => {
+      // Not found - create a new one
+      if (err === 'NOT_FOUND') {
         res = {
           recordType: 'EncryptedApplication',
           recordName: app.uuid,
@@ -153,17 +231,17 @@ class RemoteStorage extends React.Component {
             removed: {}
           }
         };
-      } else {
-        res = res.records[0];
+      } else if (err) {
+        return this._logError(err);
       }
 
       if (res.modified) {
         // Cloud version is newer - broadcast
-        if (res.modified.timestamp > app.modifiedAt)
+        if (res.modified.timestamp > app.changedAt)
           return this.dispatchRecord(res);
 
         // Same version - skip update
-        if (res.modified.timestamp === app.modifiedAt)
+        if (res.modified.timestamp === app.changedAt)
           return;
       }
 
@@ -175,44 +253,52 @@ class RemoteStorage extends React.Component {
       res.fields.index.value = app.index;
       res.fields.removed.value = app.removed ? 1 : 0;
 
-      this.db.saveRecords(res).then((res) => {
-        if (res.hasErrors) {
-          if (res.errors[0].ckErrorCode !== 'CONFLICT') {
-            this._logError(res.errors);
-            return;
-          }
-
-          // Conflict - retry
+      this.saveRecord(res, (err) => {
+        // Retry!
+        if (err === 'CONFLICT') {
           this.onAppChange(app);
+        } else if (err) {
+          this._logError(err);
           return;
         }
 
         // Done!
       }).catch((err) => { this._logError(err); });
-    }).catch((err) => { this._logError(err); });
+    });
   }
 
   sync() {
+    this.syncQueue = new Map();
+
     // Invoke queued actions
     this.db.performQuery({
       recordType: 'EncryptedApplication'
     }).then((res) => {
+      const queue = this.syncQueue;
+      this.syncQueue = false;
+
       // TODO(indutny): handle me
       if (res.hasErrors) {
+        // Retry queued fetches
+        queue.forEach(value => value.forEach(item => item.retry()));
         this._logError(res.errors);
         return;
       }
 
       const store = this.store;
-      for (let i = 0; i < res.records.length; i++)
-        this.dispatchRecord(res.records[i]);
+      for (let i = 0; i < res.records.length; i++) {
+        const rec = res.records[i];
+        if (queue.has(rec.recordName))
+          queue.get(rec.recordName).forEach(item => item.done(null, rec));
+        this.dispatchRecord(rec);
+      }
     }).catch((err) => { this._logError(err); });
   }
 
   dispatchRecord(rec) {
     const fields = rec.fields;
 
-    store.dispatch(actions.syncApplication({
+    this.store.dispatch(actions.syncApplication({
       uuid: rec.recordName,
 
       domain: fields.domain.value,

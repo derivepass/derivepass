@@ -22,7 +22,7 @@ function application(state, action) {
         };
       }
 
-      if (p.uuid !== state.uuid || p.changedAt < state.changedAt)
+      if (p.uuid !== state.uuid || p.changedAt <= state.changedAt)
         return state;
 
       return Object.assign({}, state, {
@@ -73,18 +73,11 @@ function application(state, action) {
 function applications(state = [], action) {
   switch (action.type) {
     case 'SYNC_APPLICATION':
-      let found = false;
+      const found = state.some(app => app.uuid === action.payload.uuid);
+      if (!found)
+        return state.concat(application(undefined, action));
 
-      const res = state.map((state) => {
-        const res = application(state, action);
-        if (res !== state)
-          found = true;
-        return res;
-      });
-
-      if (found)
-        return res;
-      return res.concat(application(undefined, action));
+      return state.map(state => application(state, action));
     case 'REMOVE_APPLICATION':
     case 'MOVE_APPLICATION':
     case 'UPDATE_APPLICATION':

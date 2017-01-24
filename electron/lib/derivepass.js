@@ -31,6 +31,9 @@ components.MasterPassword = require('./derivepass/components/master-password');
 components.Config = require('./derivepass/components/config');
 components.LocalStorage = require('./derivepass/components/local-storage');
 components.RemoteStorage = require('./derivepass/components/remote-storage');
+components.Application = require('./derivepass/components/application');
+components.ApplicationList =
+    require('./derivepass/components/application-list');
 components.TabView = require('./derivepass/components/tab-view');
 components.Page = require('./derivepass/components/page');
 

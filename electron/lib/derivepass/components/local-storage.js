@@ -19,13 +19,16 @@ class LocalStorage extends React.Component {
     // Handle initial applications
     this.store.getState().applications.forEach(app => this.onAppChange(app));
 
-    // Synchronously load all applications
-    this.load();
+    // Avoid any state changes during constructor
+    process.nextTick(() => {
+      // Synchronously load all applications
+      this.load();
 
-    // Start handling updates only after synchronous `load`
-    this.lastState = this.store.getState();
-    this.store.subscribe(() => {
-      this.onStateChange();
+      // Start handling updates only after synchronous `load`
+      this.lastState = this.store.getState();
+      this.store.subscribe(() => {
+        this.onStateChange();
+      });
     });
   }
 

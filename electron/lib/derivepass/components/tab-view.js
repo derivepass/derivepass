@@ -13,13 +13,13 @@ class TabView extends React.Component {
     const buttons = [];
     const views = [];
 
-    this.props.views.forEach((item, i) => {
-      const suffix = i === this.props.active ? 'active' : 'inactive';
+    this.props.views.forEach((item) => {
+      const suffix = item.id === this.props.active ? 'active' : 'inactive';
 
       const button = e('button', {
         key: item.id,
         className: `tab-view-nav-button tab-view-nav-button-${suffix}`,
-        onClick: () => this.props.onClick(i)
+        onClick: () => this.props.onClick(item.id)
       }, item.title);
 
       const view = e('article', {

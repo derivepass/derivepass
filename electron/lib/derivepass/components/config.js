@@ -17,6 +17,7 @@ class Config extends React.Component {
     return e(
       'section',
       { className: 'config' },
+      e('span', {}, 'iCloud status:'),
       e('section', { id: 'apple-sign-in-button' }),
       e('section', { id: 'apple-sign-out-button' }));
   }

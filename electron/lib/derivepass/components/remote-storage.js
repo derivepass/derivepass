@@ -108,6 +108,8 @@ class RemoteStorage extends React.Component {
       .then(user => this.onSignIn(user))
       .catch((err) => { this._logError(err); });
 
+    this.props.onFocusNeeded();
+
     this.unsubscribe();
     this.unsubscribe = null;
   }

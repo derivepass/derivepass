@@ -26,7 +26,6 @@ redux.reducers = require('./derivepass/redux/reducers');
 const components = {};
 derivepass.components = components;
 
-components.Emoji = require('./derivepass/components/emoji');
 components.MasterPassword = require('./derivepass/components/master-password');
 components.Config = require('./derivepass/components/config');
 components.LocalStorage = require('./derivepass/components/local-storage');

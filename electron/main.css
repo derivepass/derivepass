@@ -74,45 +74,20 @@ body {
 
 /* Applications pane */
 
-#apps .application {
-  border: 1px solid #111;
+.application-list-computing {
+  background: #777;
+}
+
+.application-list .application {
+  border-bottom: 1px solid #111;
+  padding: 4px 2px;
   text-align: left;
 }
 
-#apps .application .application-domain {
+.application-list .application .application-domain {
   font-size: 24px;
 }
 
-#apps .application .application-login {
+.application-list .application .application-login {
   font-size: 16px;
-}
-
-#apps .application .application-buttons {
-  float: right;
-}
-
-#apps .application .application-buttons .application-buttons-button {
-  width: 16px;
-  height: 16px;
-  background: #eee;
-  color: #111;
-  border: 1px solid #111;
-}
-
-#new-app {
-  text-align: center;
-}
-
-#new-app .new-app-submit {
-  padding: 4px 8px;
-  background: #eee;
-  color: #111;
-  border: 1px solid #111;
-}
-
-#new-app input {
-  display: block;
-  border: 1px solid #111;
-  padding: 4px 8px;
-  margin: 4px 2px;
 }

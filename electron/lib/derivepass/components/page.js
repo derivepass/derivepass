@@ -19,8 +19,11 @@ class Page extends React.Component {
   constructor() {
     super();
 
+    this.cryptor = new derivepass.Cryptor();
+
     this.state = {
       master: '',
+      emoji: '',
       applications: [],
       activeTab: 'master'
     };
@@ -38,12 +41,15 @@ class Page extends React.Component {
     });
   }
 
-  onMasterChange(value) {
+  onMasterChange(master, emoji) {
     clearTimeout(this.delayTimer);
     this.delayTimer = setTimeout(() => {
-      this.setState(Object.assign({}, this.state, {
-        master: value
-      }));
+      this.cryptor.deriveKeys(master, () => {
+        this.setState(Object.assign({}, this.state, {
+          master: master,
+          emoji: emoji
+        }));
+      });
     }, DELAY_TIMEOUT);
   }
 
@@ -53,14 +59,20 @@ class Page extends React.Component {
         id: 'master',
         title: 'Master',
         elem: e(MasterPassword, {
-          onChange: (v) => this.onMasterChange(v)
+          onChange: (master, emoji) => this.onMasterChange(master, emoji)
         })
       },
       {
         id: 'applications',
         title: 'Applications',
         elem: e(ApplicationList, {
-          applications: this.state.applications
+          cryptor: this.cryptor,
+          master: this.state.master,
+          applications: this.state.applications.filter((app) => {
+            return !app.removed && app.master === this.state.emoji;
+          }).sort((a, b) => {
+            return a.index - b.index;
+          })
         })
       },
       {

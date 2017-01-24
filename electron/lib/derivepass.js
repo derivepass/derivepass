@@ -21,19 +21,33 @@ derivepass.redux = redux;
 redux.actions = require('./derivepass/redux/actions');
 redux.reducers = require('./derivepass/redux/reducers');
 
+// React-Redux containers
+const containers = {};
+derivepass.containers = containers;
+
 // React components
 
 const components = {};
 derivepass.components = components;
 
 components.MasterPassword = require('./derivepass/components/master-password');
+containers.MasterPassword = require('./derivepass/containers/master-password');
+
 components.Config = require('./derivepass/components/config');
 components.LocalStorage = require('./derivepass/components/local-storage');
 components.RemoteStorage = require('./derivepass/components/remote-storage');
+
 components.Application = require('./derivepass/components/application');
+containers.Application = require('./derivepass/containers/application');
+
 components.ApplicationList =
     require('./derivepass/components/application-list');
+containers.ApplicationList =
+    require('./derivepass/containers/application-list');
+
 components.TabView = require('./derivepass/components/tab-view');
+containers.TabView = require('./derivepass/containers/tab-view');
+
 components.Page = require('./derivepass/components/page');
 
 derivepass.start = (id) => {

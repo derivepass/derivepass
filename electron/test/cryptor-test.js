@@ -58,11 +58,19 @@ describe('Crypto', () => {
   it('should generate password', (cb) => {
     const c = new Cryptor();
 
-    c.passwordFromMaster('hello', 'gmail.com', 'test', 1, (err, pass) => {
+    c.derivePassword('hello', {
+      domain: 'gmail.com',
+      login: 'test',
+      revision: 1
+    }, (err, pass) => {
       assert(!err);
       assert.strictEqual(pass, 'b4r5cMNCdcLJZ5aroCo5CGM7');
 
-      c.passwordFromMaster('hello', 'gmail.com', 'test', 2, (err, pass) => {
+      c.derivePassord('hello', {
+        domain: 'gmail.com',
+        login: 'test',
+        revision: 2
+      }, (err, pass) => {
         assert(!err);
         assert.strictEqual(pass, '.Tzt73chSH7xCo_dvz_eraC_');
 

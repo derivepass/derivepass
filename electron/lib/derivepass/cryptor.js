@@ -17,14 +17,10 @@ function Cryptor() {
 }
 module.exports = Cryptor;
 
-Cryptor.prototype.passwordFromMaster = function passwordFromMaster(master,
-                                                                   domain,
-                                                                   login,
-                                                                   revision,
-                                                                   cb) {
-  let text = `${domain}/${login}`;
-  if (revision > 1)
-    text += `#${revision}`;
+Cryptor.prototype.derivePassword = function derivePassword(master, app, cb) {
+  let text = `${app.domain}/${app.login}`;
+  if (app.revision > 1)
+    text += `#${app.revision}`;
   binding.derivepass(master, text, pass => cb(null, pass));
 };
 
@@ -87,8 +83,13 @@ Cryptor.prototype.decrypt = function decrypt(value) {
         .update(value.slice(0, value.length - MAC_SIZE))
         .digest();
     const mac = value.slice(value.length - MAC_SIZE);
-    assert.equal(actual.toString('hex'), mac.toString('hex'),
-                 'MAC mismatch');
+    try {
+      assert.equal(actual.toString('hex'), mac.toString('hex'),
+                   'MAC mismatch');
+    } catch (e) {
+      console.error(e);
+      return '<decrypt failed>';
+    }
 
     value = value.slice(0, value.length - MAC_SIZE);
   }
@@ -98,7 +99,12 @@ Cryptor.prototype.decrypt = function decrypt(value) {
 
   const d = crypto.createDecipheriv('aes-256-cbc', this.aesKey, iv);
 
-  return d.update(content) + d.final();
+  try {
+    return d.update(content) + d.final();
+  } catch (e) {
+    console.error(e);
+    return '<decrypt failed>';
+  }
 };
 
 Cryptor.prototype.encryptNumber = function encryptNumber(value) {
@@ -106,5 +112,5 @@ Cryptor.prototype.encryptNumber = function encryptNumber(value) {
 };
 
 Cryptor.prototype.decryptNumber = function decryptNumber(value) {
-  return parseInt(this.decrypt(value), 10);
+  return this.decrypt(value) | 0;
 };

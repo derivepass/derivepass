@@ -17,7 +17,8 @@ class LocalStorage extends React.Component {
     this.lastState = null;
 
     // Handle initial applications
-    this.store.getState().applications.forEach(app => this.onAppChange(app));
+    const apps = this.store.getState().applications;
+    apps.list.forEach(app => this.onAppChange(app));
 
     // Avoid any state changes during constructor
     process.nextTick(() => {
@@ -40,8 +41,8 @@ class LocalStorage extends React.Component {
     const newState = this.store.getState();
     this.lastState = newState;
 
-    const changed = newState.applications.reduce((changed, app) => {
-      if (oldState.applications.includes(app))
+    const changed = newState.applications.list.reduce((changed, app) => {
+      if (oldState.applications.list.includes(app))
         return changed;
 
       return changed.concat(app);

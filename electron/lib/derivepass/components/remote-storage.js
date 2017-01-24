@@ -100,7 +100,7 @@ class RemoteStorage extends React.Component {
     });
 
     // Handle initial applications
-    this.lastState.applications.forEach(app => this.onAppChange(app));
+    this.lastState.applications.list.forEach(app => this.onAppChange(app));
   }
 
   onSignOut() {
@@ -122,8 +122,8 @@ class RemoteStorage extends React.Component {
     const newState = this.store.getState();
     this.lastState = newState;
 
-    const changed = newState.applications.reduce((changed, app) => {
-      if (oldState.applications.includes(app))
+    const changed = newState.applications.list.reduce((changed, app) => {
+      if (oldState.applications.list.includes(app))
         return changed;
 
       return changed.concat(app);

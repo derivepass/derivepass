@@ -74,14 +74,14 @@ body {
 
 /* Applications pane */
 
-.application-list-computing {
-  background: #777;
-}
-
 .application-list .application {
   border-bottom: 1px solid #111;
   padding: 4px 2px;
   text-align: left;
+}
+
+.application-list .application-computing {
+  background: #777;
 }
 
 .application-list .application .application-domain {
@@ -89,5 +89,9 @@ body {
 }
 
 .application-list .application .application-login {
+  font-size: 16px;
+}
+
+.application-list .application .application-revision {
   font-size: 16px;
 }

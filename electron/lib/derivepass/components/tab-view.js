@@ -1,14 +1,11 @@
 'use strict';
 
 const React = require('react');
+const derivepass = require('../../derivepass');
 
 const e = React.createElement;
 
 class TabView extends React.Component {
-  constructor() {
-    super();
-  }
-
   render() {
     const buttons = [];
     const views = [];

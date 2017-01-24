@@ -22,3 +22,28 @@ exports.updateApplication = (uuid, info) => {
     }
   };
 };
+
+exports.toggleApplicationView = (uuid, state) => {
+  return {
+    type: 'TOGGLE_APPLICATION_VIEW',
+    payload: { uuid, state }
+  };
+};
+
+exports.updateMaster = (password, emoji) => {
+  return {
+    type: 'UPDATE_MASTER',
+    payload: { password, emoji }
+  };
+};
+
+exports.setMasterComputing = (value) => {
+  return { type: 'SET_MASTER_COMPUTING', payload: { value } };
+};
+
+exports.selectTab = (id) => {
+  return {
+    type: 'SELECT_TAB',
+    payload: { id: id }
+  };
+};

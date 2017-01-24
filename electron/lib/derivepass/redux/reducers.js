@@ -18,7 +18,11 @@ function application(state, action) {
           index: p.index,
           master: p.master,
           removed: p.removed,
-          changedAt: p.changedAt
+          changedAt: p.changedAt,
+
+          view: {
+            state: 'NORMAL'
+          }
         };
       }
 
@@ -65,28 +69,78 @@ function application(state, action) {
 
         changedAt: p.changedAt
       });
+    case 'TOGGLE_APPLICATION_VIEW':
+      if (p.uuid !== state.uuid)
+        return state;
+
+      return Object.assign({}, state, {
+        view: { state: p.state }
+      });
     default:
       return state;
   }
 }
 
-function applications(state = [], action) {
+function applications(state = { list: [] }, action) {
   switch (action.type) {
     case 'SYNC_APPLICATION':
-      const found = state.some(app => app.uuid === action.payload.uuid);
-      if (!found)
-        return state.concat(application(undefined, action));
+      const found = state.list.some(app => app.uuid === action.payload.uuid);
+      if (!found) {
+        return Object.assign({}, state, {
+          list: state.list.concat(application(undefined, action))
+        });
+      }
 
-      return state.map(state => application(state, action));
+      return Object.assign({}, state, {
+        list: state.list.map(state => application(state, action))
+      });
     case 'REMOVE_APPLICATION':
     case 'MOVE_APPLICATION':
     case 'UPDATE_APPLICATION':
-      return state.map(app => application(app, action));
+    case 'TOGGLE_APPLICATION_VIEW':
+      return Object.assign({}, state, {
+        list: state.list.map(app => application(app, action))
+      });
+    default:
+      return state;
+  }
+}
+
+function master(state, action) {
+  const p = action.payload;
+
+  if (state === undefined) {
+    state = {
+      password: '',
+      emoji: '😬',
+      computing: 'PENDING'
+    };
+  }
+
+  switch (action.type) {
+    case 'UPDATE_MASTER':
+      return Object.assign({}, state, {
+        password: p.password,
+        emoji: p.emoji
+      });
+    case 'SET_MASTER_COMPUTING':
+      return Object.assign({}, state, { computing: p.value });
+    default:
+      return state;
+  }
+}
+
+function tab(state = { active: 'MASTER' }, action) {
+  switch (action.type) {
+    case 'SELECT_TAB':
+      return { active: action.payload.id };
     default:
       return state;
   }
 }
 
 module.exports = redux.combineReducers({
+  master: master,
+  tab: tab,
   applications: applications
 });

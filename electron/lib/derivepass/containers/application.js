@@ -13,7 +13,7 @@ function mapStateToProps(state, ownProps) {
   return {
     raw,
     master: state.master,
-    app: {
+    app: raw === null ? null : {
       domain: cryptor.decrypt(raw.domain),
       login: cryptor.decrypt(raw.login),
       revision: cryptor.decryptNumber(raw.revision),
@@ -41,10 +41,15 @@ function mapDispatchToProps(dispatch, ownProps) {
       const encrypted = {
         domain: cryptor.encrypt(app.domain),
         login: cryptor.encrypt(app.login),
-        revision: cryptor.encryptNumber(app.revision)
+        revision: cryptor.encryptNumber(app.revision),
+
+        changedAt: Date.now()
       };
 
       dispatch(actions.updateApplication(raw.uuid, encrypted));
+    },
+    onRemove: () => {
+      dispatch(actions.removeApplication(raw.uuid, Date.now()));
     }
   };
 }

@@ -4,12 +4,12 @@ exports.syncApplication = (info) => {
   return { type: 'SYNC_APPLICATION', payload: info };
 };
 
-exports.removeApplication = (uuid) => {
-  return { type: 'REMOVE_APPLICATION', payload: { uuid } };
+exports.removeApplication = (uuid, changedAt) => {
+  return { type: 'REMOVE_APPLICATION', payload: { uuid, changedAt } };
 };
 
-exports.moveApplication = (uuid, newIndex) => {
-  return { type: 'MOVE_APPLICATION', payload: { newIndex } };
+exports.moveApplication = (uuid, newIndex, changedAt) => {
+  return { type: 'MOVE_APPLICATION', payload: { newIndex, changedAt } };
 };
 
 exports.updateApplication = (uuid, info) => {
@@ -19,7 +19,9 @@ exports.updateApplication = (uuid, info) => {
       uuid: uuid,
       domain: info.domain,
       login: info.login,
-      revision: info.revision
+      revision: info.revision,
+
+      changedAt: info.now
     }
   };
 };
@@ -31,8 +33,8 @@ exports.updateMaster = (password, emoji) => {
   };
 };
 
-exports.setMasterComputing = (value) => {
-  return { type: 'SET_MASTER_COMPUTING', payload: { value } };
+exports.setMasterComputing = (status, emoji) => {
+  return { type: 'SET_MASTER_COMPUTING', payload: { status, emoji } };
 };
 
 exports.selectTab = (id) => {

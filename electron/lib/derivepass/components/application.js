@@ -6,14 +6,25 @@ const derivepass = require('../../derivepass');
 
 const e = React.createElement;
 
+const EMPTY_APP = {
+  domain: '',
+  login: '',
+  revision: 1
+};
+
 class Application extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     // NOTE: Ideally, we could want to have separate redux store here
-    this.state = {
-      view: 'normal'
-    };
+    if (props.app === null) {
+      this.state = {
+        fields: EMPTY_APP,
+        view: 'edit'
+      };
+    } else {
+      this.state = { view: 'normal' };
+    }
   }
 
   render() {
@@ -55,13 +66,16 @@ class Application extends React.Component {
     }));
   }
 
-  input(field) {
-    return e('input', {
-      className: `application-${field}`,
-      type: field === 'revision' ? 'number' : 'text',
-      onChange: (e) => this.onFieldChange(field, e.target.value),
-      value: this.state.fields[field]
-    });
+  input(label, field) {
+    return e('section', { className: 'application-field' },
+      e('label', { className: 'application-field-label' },
+        e('span', {}, label),
+        e('input', {
+          className: `application-${field}`,
+          type: field === 'revision' ? 'number' : 'text',
+          onChange: (e) => this.onFieldChange(field, e.target.value),
+          value: this.state.fields[field]
+        })));
   }
 
   onFieldChange(field, value) {
@@ -76,19 +90,50 @@ class Application extends React.Component {
   renderEdit() {
     const props = this.props;
 
+    const isNew = props.app === null;
+
     const save = e('button', {
       className: 'application-save',
       onClick: (e) => {
         e.stopPropagation();
         const fields = this.state.fields;
-        this.setState(Object.assign({}, this.state, { view: 'normal' }));
-        this.props.onSave(fields);
+
+        if (fields.domain.length === 0 ||
+            fields.login.length === 0 ||
+            (fields.revision | 0) < 1) {
+          return;
+        }
+
+        if (isNew) {
+          this.setState(Object.assign({}, this.state, {
+            fields: EMPTY_APP,
+            view: 'edit'
+          }));
+          this.props.onCreate(fields);
+        } else {
+          this.setState(Object.assign({}, this.state, { view: 'normal' }));
+          this.props.onSave(fields);
+        }
       }
     }, '💾');
 
+    const remove = !isNew && e('button', {
+      className: 'application-remove',
+      onClick: (e) => {
+        e.stopPropagation();
+        this.props.onRemove();
+      }
+    }, '🗑');
+
+    const title = isNew && e('h3', {}, 'New Application');
+
     return e('article', {
       className: 'application application-edit'
-    }, this.input('domain'), this.input('login'), this.input('revision'), save);
+    }, title,
+       this.input('Domain:', 'domain'),
+       this.input('Login:', 'login'),
+       this.input('Revision:', 'revision'),
+       save, remove);
   }
 }
 module.exports = Application;

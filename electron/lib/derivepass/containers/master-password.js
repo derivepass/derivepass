@@ -63,7 +63,7 @@ function mapStateToProps(state) {
   return {
     master: state.master.password,
     emoji: state.master.emoji,
-    computing: state.master.computing
+    computing: state.master.computing.status
   };
 }
 
@@ -93,21 +93,22 @@ function mapDispatchToProps(dispatch, ownProps) {
   return function componentMap(dispatch, ownProps) {
     return {
       onChange: (master, computing) => {
+        const emoji = computeEmoji(master);
         if (timer)
           clearTimeout(timer);
         else
-          dispatch(actions.setMasterComputing('PENDING'));
+          dispatch(actions.setMasterComputing('PENDING', emoji));
 
         timer = setTimeout(() => {
           timer = null;
 
-          dispatch(actions.setMasterComputing('RUNNING'));
+          dispatch(actions.setMasterComputing('RUNNING', emoji));
           ownProps.cryptor.deriveKeys(master, () => {
-            dispatch(actions.setMasterComputing('READY'));
+            dispatch(actions.setMasterComputing('READY', emoji));
           });
         }, KEY_DELAY);
 
-        dispatch(actions.updateMaster(master, computeEmoji(master)));
+        dispatch(actions.updateMaster(master, emoji));
       }
     };
   };

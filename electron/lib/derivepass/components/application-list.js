@@ -18,6 +18,14 @@ class ApplicationList extends React.Component {
         cryptor: this.props.cryptor,
         app: raw
       });
+    }), this.props.allowCreate && e(Application, {
+      cryptor: this.props.cryptor,
+      app: null,
+      onCreate: (info) => {
+        this.props.onCreate(this.props.master, Object.assign({}, info, {
+          index: this.props.applications.length
+        }));
+      }
     }));
   }
 }

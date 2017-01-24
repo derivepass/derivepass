@@ -39,24 +39,23 @@ function application(state, action) {
         return state;
 
       return Object.assign({}, state, {
-        removed: true
+        removed: true,
+        changedAt: p.changedAt
       });
     case 'MOVE_APPLICATION':
       if (p.uuid !== state.uuid || p.newIndex === state.index)
         return state;
 
       return Object.assign({}, state, {
-        index: p.newIndex
+        index: p.newIndex,
+        changedAt: p.changedAt
       });
     case 'UPDATE_APPLICATION':
       if (p.uuid !== state.uuid)
         return state;
 
-      if (p.domain === state.domain &&
-          p.login === state.login &&
-          p.revision === state.revision) {
+      if (p.changedAt === state.changedAt)
         return state;
-      }
 
       return Object.assign({}, state, {
         domain: p.domain,
@@ -101,7 +100,10 @@ function master(state, action) {
     state = {
       password: '',
       emoji: '😬',
-      computing: 'PENDING'
+      computing: {
+        status: 'PENDING',
+        emoji: ''
+      }
     };
   }
 
@@ -112,7 +114,9 @@ function master(state, action) {
         emoji: p.emoji
       });
     case 'SET_MASTER_COMPUTING':
-      return Object.assign({}, state, { computing: p.value });
+      return Object.assign({}, state, {
+        computing: { status: p.status, emoji: p.emoji }
+      });
     default:
       return state;
   }

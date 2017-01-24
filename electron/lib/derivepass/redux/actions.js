@@ -16,17 +16,11 @@ exports.updateApplication = (uuid, info) => {
   return {
     type: 'UPDATE_APPLICATION',
     payload: {
+      uuid: uuid,
       domain: info.domain,
       login: info.login,
       revision: info.revision
     }
-  };
-};
-
-exports.toggleApplicationView = (uuid, state) => {
-  return {
-    type: 'TOGGLE_APPLICATION_VIEW',
-    payload: { uuid, state }
   };
 };
 

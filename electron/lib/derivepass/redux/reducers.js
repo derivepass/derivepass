@@ -18,11 +18,7 @@ function application(state, action) {
           index: p.index,
           master: p.master,
           removed: p.removed,
-          changedAt: p.changedAt,
-
-          view: {
-            state: 'NORMAL'
-          }
+          changedAt: p.changedAt
         };
       }
 
@@ -69,13 +65,6 @@ function application(state, action) {
 
         changedAt: p.changedAt
       });
-    case 'TOGGLE_APPLICATION_VIEW':
-      if (p.uuid !== state.uuid)
-        return state;
-
-      return Object.assign({}, state, {
-        view: { state: p.state }
-      });
     default:
       return state;
   }
@@ -97,7 +86,6 @@ function applications(state = { list: [] }, action) {
     case 'REMOVE_APPLICATION':
     case 'MOVE_APPLICATION':
     case 'UPDATE_APPLICATION':
-    case 'TOGGLE_APPLICATION_VIEW':
       return Object.assign({}, state, {
         list: state.list.map(app => application(app, action))
       });

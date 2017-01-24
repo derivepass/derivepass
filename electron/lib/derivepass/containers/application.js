@@ -13,11 +13,11 @@ function mapStateToProps(state, ownProps) {
   return {
     raw,
     master: state.master,
-    view: raw.view,
     app: {
       domain: cryptor.decrypt(raw.domain),
       login: cryptor.decrypt(raw.login),
-      revision: cryptor.decryptNumber(raw.revision)
+      revision: cryptor.decryptNumber(raw.revision),
+      index: raw.index
     }
   };
 }
@@ -27,28 +27,24 @@ function mapDispatchToProps(dispatch, ownProps) {
   const raw = ownProps.app;
 
   return {
-    onClick: (master, app) => {
-      if (raw.view.state !== 'NORMAL')
-        return;
-
-      dispatch(actions.toggleApplicationView(raw.uuid, 'COMPUTING'));
+    copyPassword: (master, app, done) => {
       cryptor.derivePassword(master.password, app, (err, password) => {
-        dispatch(actions.toggleApplicationView(raw.uuid, 'NORMAL'));
         if (err)
-          return console.error(err);
+          console.error(err);
+        else
+          electron.clipboard.writeText(password);
 
-        electron.clipboard.writeText(password);
+        done(null);
       });
     },
-    onEdit: () => {
-      if (raw.view.state !== 'NORMAL')
-        return;
-      dispatch(actions.toggleApplicationView(raw.uuid, 'EDIT'));
-    },
     onSave: (app) => {
-      if (raw.view.state !== 'EDIT')
-        return;
-      dispatch(actions.toggleApplicationView(raw.uuid, 'NORMAL'));
+      const encrypted = {
+        domain: cryptor.encrypt(app.domain),
+        login: cryptor.encrypt(app.login),
+        revision: cryptor.encryptNumber(app.revision)
+      };
+
+      dispatch(actions.updateApplication(raw.uuid, encrypted));
     }
   };
 }

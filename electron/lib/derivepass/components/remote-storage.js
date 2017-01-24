@@ -197,8 +197,16 @@ class RemoteStorage extends React.Component {
     const queue = this.saveQueue;
     this.saveQueue = false;
 
-    this.db.saveRecords(Array.from(queue.keys())).then((res) => {
-      this._handleBulkResponse(res, queue);
+    const map = new Map();
+    const recs = Array.from(queue.keys());
+
+    // Copy callbacks into `uuid => [callback]` map
+    recs.forEach((rec) => {
+      map.set(rec.recordName, queue.get(rec));
+    });
+
+    this.db.saveRecords(recs).then((res) => {
+      this._handleBulkResponse(res, map);
     });
   }
 
@@ -213,6 +221,8 @@ class RemoteStorage extends React.Component {
 
     for (let i = 0; i < res.records.length; i++) {
       const rec = res.records[i];
+      if (!queue.has(rec.recordName))
+        console.error(queue);
       queue.get(rec.recordName).forEach(cb => cb(null, rec));
     }
   }
@@ -265,7 +275,7 @@ class RemoteStorage extends React.Component {
         }
 
         // Done!
-      }).catch((err) => { this._logError(err); });
+      });
     });
   }
 

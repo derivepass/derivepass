@@ -86,18 +86,21 @@ static const int kApplicationCount = 3;
   NSPredicate* exists = [NSPredicate predicateWithFormat:@"exists == 1"];
   NSPredicate* notExists = [NSPredicate predicateWithFormat:@"exists == 0"];
   for (int i = 0; i < kApplicationCount; i++) {
-    elem = [tablesQuery.cells
-               containingType:XCUIElementTypeStaticText
-                   identifier:[NSString stringWithFormat:@"%d-test.com", i]]
-               .element;
-    [elem tap];
-
     // Notification should flash and be gone
     XCUIElement* notification =
         app.staticTexts[@"Password copied to clipboard"];
     [self expectationForPredicate:exists
               evaluatedWithObject:notification
                           handler:nil];
+
+    // ...on tap
+    elem = [tablesQuery.cells
+               containingType:XCUIElementTypeStaticText
+                   identifier:[NSString stringWithFormat:@"%d-test.com", i]]
+               .element;
+    [elem tap];
+
+    // Let's wait
     [self waitForExpectationsWithTimeout:30.0 handler:nil];
     [self expectationForPredicate:notExists
               evaluatedWithObject:notification

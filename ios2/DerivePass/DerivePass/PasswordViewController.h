@@ -12,4 +12,6 @@
 
 @interface PasswordViewController : UIViewController
 
+- (void)protectedDataWillBecomeUnavailable;
+
 @end

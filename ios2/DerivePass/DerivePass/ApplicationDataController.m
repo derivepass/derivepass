@@ -59,17 +59,23 @@
   self.managedObjectContext = ctx;
 
   NSFileManager* fm = [NSFileManager defaultManager];
+
   NSURL* documentsURL = [[fm URLsForDirectory:NSDocumentDirectory
                                     inDomains:NSUserDomainMask] lastObject];
   NSURL* storeURL =
       [documentsURL URLByAppendingPathComponent:@"Applications.data"];
 
+  // Needed to trigger "applicationProtectedDataWillBecomeUnavailable"
   NSError* err = nil;
-  NSPersistentStore* store = [psc addPersistentStoreWithType:NSBinaryStoreType
-                                               configuration:nil
-                                                         URL:storeURL
-                                                     options:nil
-                                                       error:&err];
+  NSPersistentStore* store = [psc
+      addPersistentStoreWithType:NSBinaryStoreType
+                   configuration:nil
+                             URL:storeURL
+                         options:@{
+                           NSFileProtectionKey : NSFileProtectionComplete,
+                           NSMigratePersistentStoresAutomaticallyOption : @YES
+                         }
+                           error:&err];
   NSAssert(store != nil, @"Failed to initialize PSC: %@\n%@",
            [err localizedDescription], [err userInfo]);
 

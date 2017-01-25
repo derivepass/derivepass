@@ -57,6 +57,12 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [self reset];
+  [self.navigationController setNavigationBarHidden:YES];
+}
+
+
+- (void)reset {
   confirming_ = nil;
   self.emojiLabel.text = kDefaultEmoji;
   self.emojiConfirmationLabel.text = kDefaultEmoji;
@@ -64,7 +70,11 @@ static NSString* const kConfirmPlaceholder = @"Confirm Password";
   self.masterPassword.text = @"";
   self.masterPassword.placeholder = kMasterPlaceholder;
   self.masterPassword.returnKeyType = UIReturnKeyDone;
-  [self.navigationController setNavigationBarHidden:YES];
+}
+
+
+- (void)protectedDataWillBecomeUnavailable {
+  [self reset];
 }
 
 

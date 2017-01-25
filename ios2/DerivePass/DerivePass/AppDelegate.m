@@ -9,6 +9,7 @@
 //
 
 #import "AppDelegate.h"
+#import "PasswordViewController.h"
 
 @interface AppDelegate ()
 
@@ -63,6 +64,20 @@
         [self.previewBlocker removeFromSuperview];
         self.previewBlocker = nil;
       }];
+}
+
+
+- (void)applicationProtectedDataWillBecomeUnavailable:
+    (UIApplication *)application {
+  UINavigationController *nav =
+      (UINavigationController *)self.window.rootViewController;
+  [nav popToRootViewControllerAnimated:YES];
+
+  UIViewController *top = nav.topViewController;
+  if ([top respondsToSelector:@selector(protectedDataWillBecomeUnavailable)]) {
+    PasswordViewController *p = (PasswordViewController *)top;
+    [p protectedDataWillBecomeUnavailable];
+  }
 }
 
 

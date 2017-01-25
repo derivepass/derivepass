@@ -151,37 +151,45 @@
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
   if (tableView.isEditing) return;
 
-  ApplicationTableViewCell* cell =
+  __block ApplicationTableViewCell* cell =
       [self.tableView cellForRowAtIndexPath:indexPath];
   Application* info = self.applications[indexPath.row];
 
   self.view.userInteractionEnabled = NO;
   [cell.activityIndicator startAnimating];
-  cell.activityIndicator.center =
-      CGPointMake(cell.center.x, cell.contentView.center.y);
+  cell.activityIndicator.center = cell.accessoryView.center;
+
+  __block UIView* accessory = cell.accessoryView;
+  cell.accessoryView = nil;
+
+  void (^completion)(NSString*) = ^(NSString* password) {
+    UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = password;
+
+    __block UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:@""
+                         message:@"Password copied to clipboard"
+                  preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alert
+                       animated:YES
+                     completion:^{
+                       [cell.activityIndicator stopAnimating];
+                       cell.accessoryView = accessory;
+                     }];
+
+    dispatch_queue_t queue = dispatch_get_main_queue();
+    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+    dispatch_after(when, queue, ^{
+      [alert dismissViewControllerAnimated:YES completion:nil];
+      [self.view setUserInteractionEnabled:YES];
+    });
+  };
 
   [Helpers passwordFromMaster:self.masterPassword
                        domain:info.plaintextDomain
                         login:info.plaintextLogin
                   andRevision:info.plainRevision
-               withCompletion:^(NSString* password) {
-                 UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
-                 pasteboard.string = password;
-
-                 [cell.activityIndicator stopAnimating];
-                 UIAlertController* alert = [UIAlertController
-                     alertControllerWithTitle:@""
-                                      message:@"Password copied to clipboard"
-                               preferredStyle:UIAlertControllerStyleAlert];
-                 [self presentViewController:alert animated:YES completion:nil];
-
-                 dispatch_after(
-                     dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC),
-                     dispatch_get_main_queue(), ^(void) {
-                       [alert dismissViewControllerAnimated:YES completion:nil];
-                       [self.view setUserInteractionEnabled:YES];
-                     });
-               }];
+               withCompletion:completion];
 }
 
 

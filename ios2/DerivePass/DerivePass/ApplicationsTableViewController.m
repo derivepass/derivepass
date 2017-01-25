@@ -105,7 +105,9 @@
   // Update indexes
   int index = 0;
   for (Application* obj in self.applications) {
-    obj.index = index++;
+    if (obj.index != index)
+      obj.index = index;
+    index++;
   }
 }
 

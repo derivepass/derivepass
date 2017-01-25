@@ -206,6 +206,10 @@
         dispatch_async(dispatch_get_main_queue(), ^(void) {
           // Skip items that are the same
           if ([r.modificationDate isEqualToDate:obj.changed_at]) return;
+          
+          // Cloud object is newer!
+          if ([r.modificationDate compare:obj.changed_at] == NSOrderedDescending)
+            return [self updateObject: obj withRecord: r];
 
           // Copy these as they are, because they are encrypted
           r[@"domain"] = [obj valueForKey:@"domain"];
@@ -215,6 +219,7 @@
           r[@"index"] = [NSNumber numberWithInt:obj.index];
           r[@"removed"] = [NSNumber numberWithBool:obj.removed];
           r[@"master"] = obj.master;
+          
           [self.db saveRecord:r
               completionHandler:^(CKRecord* _Nullable record,
                                   NSError* _Nullable error) {

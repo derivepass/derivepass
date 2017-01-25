@@ -105,8 +105,10 @@
   // Update indexes
   int index = 0;
   for (Application* obj in self.applications) {
-    if (obj.index != index)
+    if (obj.index != index) {
       obj.index = index;
+      obj.changed_at = [NSDate date];
+    }
     index++;
   }
 }

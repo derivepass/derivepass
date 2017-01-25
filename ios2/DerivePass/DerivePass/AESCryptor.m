@@ -103,7 +103,10 @@ typedef enum { kAESCryptorV0, kAESCryptorV1 } AESCryptorDataVersion;
 
   // Set IV
   int err = SecRandomCopyBytes(kSecRandomDefault, kAESIVSize, iv);
-  NSAssert(err == 0, @"SecRandomCopyBytes failure");
+  if (err != 0) {
+    NSLog(@"SecRandomCopyBytes failure");
+    abort();
+  }
 
   size_t bytes;
   CCCryptorStatus st;

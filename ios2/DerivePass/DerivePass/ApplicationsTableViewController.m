@@ -19,6 +19,7 @@
 @interface ApplicationsTableViewController ()
 
 @property(strong, nonatomic) IBOutlet UIBarButtonItem* addButtonItem;
+@property(strong) UIImage* iconCopy;
 
 @end
 
@@ -26,6 +27,8 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+
+  self.iconCopy = [UIImage imageNamed:@"Copy"];
 
   self.navigationItem.rightBarButtonItems =
       @[ self.addButtonItem, self.editButtonItem ];
@@ -96,6 +99,7 @@
 
   cell.textLabel.text = info.plaintextDomain;
   cell.detailTextLabel.text = info.plaintextLogin;
+  cell.accessoryView = [[UIImageView alloc] initWithImage:self.iconCopy];
 
   return cell;
 }

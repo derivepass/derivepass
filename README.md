@@ -23,13 +23,8 @@ Secret:
 ## Building
 
 ```bash
-git clone git://github.com/indutny/scrypt
-cd scrypt
-git clone https://chromium.googlesource.com/external/gyp.git tools/gyp
-./gyp_script
-make -C out/
-./out/Release/test
-ls ./out/Release/libscrypt.a
+npm i
+ls ./out/Release/derivepass-cli
 ```
 
 #### LICENSE

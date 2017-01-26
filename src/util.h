@@ -18,7 +18,7 @@ static void base64_encode(const uint8_t* src, size_t slen, char* dst) {
 
   i = 0;
   k = 0;
-  n = slen / 3 * 3;
+  n = (unsigned) ((slen / 3) * 3);
 
   while (i < n) {
     a = src[i + 0] & 0xff;

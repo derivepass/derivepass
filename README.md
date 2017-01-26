@@ -15,7 +15,7 @@ options:
   -r <num>                   R number for scrypt (default: 8)
   -p <num>                   P number for scrypt (default: 4)
 
-$ derivepass --domain blog.indutny.com
+$ derivepass --domain gmail.com/username
 Secret:
 0UYUAM2j8xFBlkEZZrxF2Vs.
 ```

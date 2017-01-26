@@ -1,4 +1,4 @@
-# Derivepass
+# DerivePass
 
 Simple key derivation utility.
 

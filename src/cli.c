@@ -6,8 +6,8 @@
 #include <getopt.h>
 
 #include "scrypt.h"
+#include "derivepass.h"
 
-#include "src/common.h"
 #include "src/util.h"
 #include "src/version.h"
 

@@ -3,3 +3,6 @@ tools/
 out/
 .DS_Store
 xcuserdata
+gypkg_deps/
+node_modules/
+npm-debug.log

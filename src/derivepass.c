@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "src/common.h"
+#include "derivepass.h"
 #include "src/util.h"
 
 char* derive(scrypt_state_t* state,

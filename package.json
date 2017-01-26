@@ -1,0 +1,16 @@
+{
+  "name": "derivepass",
+  "version": "1.0.0",
+  "description": "Simple key derivation utility.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "gypkg build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:indutny/derivepass"
+  },
+  "keywords": ["scrypt", "derivepass"],
+  "author": "Fedor Indutny <fedor@indutny.com>",
+  "license": "MIT"
+}

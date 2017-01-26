@@ -1,3 +1,0 @@
-[submodule "deps/scrypt"]
-	path = deps/scrypt
-	url = git@github.com:indutny/scrypt

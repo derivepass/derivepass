@@ -1,7 +1,7 @@
 {
   "variables": {
     "gypkg_deps": [
-      "git://github.com/indutny/scrypt.git@^1.0.1 => scrypt.gyp:scrypt",
+      "git://github.com/indutny/scrypt.git@^1.0.1 [gpg] => scrypt.gyp:scrypt",
     ],
   },
   "targets": [{

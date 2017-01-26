@@ -5,8 +5,8 @@ Simple key derivation utility.
 ## Usage
 
 ```
-$ derivepass -h
-Usage: ./out/Release/derivepass [options]
+$ ./out/Release/derivepass-cli -h
+Usage: ./out/Release/derivepass-cli [options]
 
 options:
   --version, -v              Print version
